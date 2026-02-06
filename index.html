@@ -17,38 +17,93 @@
 
     <style>
         :root { --neon: #39ff14; --dark: #050505; --panel: rgba(20, 20, 20, 0.95); --border: rgba(57, 255, 20, 0.3); }
-        body { background-color: var(--dark); color: #e0e0e0; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; margin:0; background-image: radial-gradient(circle at 10% 20%, rgba(57, 255, 20, 0.05) 0%, transparent 20%); }
-        ::-webkit-scrollbar { display: none; } * { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        body { 
+            background-color: var(--dark); color: #e0e0e0; font-family: 'Segoe UI', sans-serif; 
+            overflow-x: hidden; margin:0; 
+            background-image: radial-gradient(circle at 10% 20%, rgba(57, 255, 20, 0.05) 0%, transparent 20%);
+        }
+
+        /* SCROLL INVISIBLE */
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
+
         .oculto { display: none !important; }
         .text-neon { color: var(--neon) !important; text-shadow: 0 0 10px rgba(57,255,20,0.4); }
-        .glass-panel { background: var(--panel); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 25px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); margin-bottom: 20px; transition: 0.3s; }
-        .input-neon { background: rgba(0,0,0,0.4); border: 1px solid #444; color: white; padding: 10px 15px; width: 100%; border-radius: 6px; outline: none; transition: 0.3s; }
+        
+        /* PANELES */
+        .glass-panel { 
+            background: var(--panel); backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 25px; 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); margin-bottom: 20px; transition: 0.3s;
+        }
+
+        /* INPUTS Y BOTONES */
+        .input-neon { 
+            background: rgba(0,0,0,0.4); border: 1px solid #444; color: white; padding: 10px 15px; 
+            width: 100%; border-radius: 6px; outline: none; transition: 0.3s;
+        }
         .input-neon:focus { border-color: var(--neon); box-shadow: 0 0 8px rgba(57,255,20,0.2); }
-        .btn-neon { background: var(--neon); color: black; font-weight: 800; border: none; padding: 10px 20px; border-radius: 6px; width: 100%; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px rgba(57,255,20,0.2); }
+        
+        .btn-neon { 
+            background: var(--neon); color: black; font-weight: 800; border: none; padding: 10px 20px; 
+            border-radius: 6px; width: 100%; text-transform: uppercase; cursor: pointer; transition: 0.3s; 
+            box-shadow: 0 0 10px rgba(57,255,20,0.2);
+        }
         .btn-neon:hover { transform: translateY(-2px); box-shadow: 0 0 20px var(--neon); }
-        .btn-outline { background: transparent; border: 1px solid var(--neon); color: var(--neon); padding: 8px 15px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: bold; text-transform: uppercase; }
+        
+        /* BOTONES SYNC ESTILO ANTIGUO */
+        .btn-outline-success { 
+            background: transparent; border: 1px solid #198754; color: #198754; 
+            padding: 8px 15px; border-radius: 6px; font-weight: bold; transition:0.3s; 
+        }
+        .btn-outline-success:hover { background: #198754; color: white; box-shadow: 0 0 15px #198754; }
+        
+        .btn-outline-warning { 
+            background: transparent; border: 1px solid #ffc107; color: #ffc107; 
+            padding: 8px 15px; border-radius: 6px; font-weight: bold; transition:0.3s; 
+        }
+        .btn-outline-warning:hover { background: #ffc107; color: black; box-shadow: 0 0 15px #ffc107; }
+
+        .btn-outline { border: 1px solid var(--neon); color: var(--neon); background: transparent; padding: 8px 15px; border-radius: 6px; font-weight: bold; }
         .btn-outline:hover { background: var(--neon); color: black; }
-        .btn-outline-success { border-color: #198754; color: #198754; background: transparent; font-weight: bold; }
-        .btn-outline-success:hover { background: #198754; color: white; }
-        .btn-outline-warning { border-color: #ffc107; color: #ffc107; background: transparent; font-weight: bold; }
-        .btn-outline-warning:hover { background: #ffc107; color: black; }
-        .sidebar { position: fixed; height: 100vh; width: 260px; background: #0a0a0a; border-right: 1px solid #222; padding-top: 20px; z-index: 2000; display: flex; flex-direction: column; transition: transform 0.3s; }
+
+        /* SIDEBAR */
+        .sidebar { 
+            position: fixed; height: 100vh; width: 260px; 
+            background: #0a0a0a; border-right: 1px solid #222; 
+            padding-top: 20px; z-index: 2000; 
+            display: flex; flex-direction: column; transition: transform 0.3s;
+        }
         .nav-container { flex-grow: 1; overflow-y: auto; }
         .brand { font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 30px; letter-spacing: 2px; font-style: italic; }
         .nav-item { padding: 15px 25px; color: #888; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.2s; font-size: 1rem; }
         .nav-item:hover, .nav-item.active { color: var(--neon); background: rgba(57,255,20,0.05); border-left: 4px solid var(--neon); }
         .user-footer { padding: 20px; background: #000; border-top: 1px solid #222; text-align: center; }
+        
         .main-content { margin-left: 260px; padding: 20px; transition: 0.3s; }
+
+        /* TOAST & MODAL */
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
         .toast-msg { background: #111; border-left: 4px solid var(--neon); color: #fff; padding: 15px 20px; border-radius: 4px; display: flex; align-items: center; gap: 12px; min-width: 250px; border: 1px solid #333; animation: slideIn 0.3s ease-out forwards; }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 5000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s; }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
-        .modal-box { background: #111; width: 420px; padding: 30px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 0 50px rgba(57,255,20,0.15); }
+        .modal-box { background: #111; width: 450px; padding: 30px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 0 50px rgba(57,255,20,0.15); }
+        
+        /* TABLAS */
         .table-custom { width: 100%; border-collapse: separate; border-spacing: 0 5px; color: #ccc; }
         .table-custom th { text-align: left; padding: 12px; color: var(--neon); border-bottom: 1px solid #333; text-transform: uppercase; font-size: 0.85rem; }
         .table-custom td { padding: 12px; background: rgba(255,255,255,0.03); border: none; font-size: 0.95rem; }
-        @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .sidebar.active { transform: translateX(0); } .main-content { margin-left: 0; padding: 15px; } #mobile-toggle { display: block !important; position: fixed; top: 15px; left: 15px; z-index: 3000; background: #000; border: 1px solid var(--neon); color: var(--neon); padding: 5px 10px; border-radius: 4px; } .btn-group-sync { flex-direction: column; width: 100%; } .btn-group-sync button, .btn-group-sync a { width: 100% !important; margin-bottom: 5px; } }
+        
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); } .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; padding: 15px; }
+            #mobile-toggle { display: block !important; position: fixed; top: 15px; left: 15px; z-index: 3000; background: #000; border: 1px solid var(--neon); color: var(--neon); padding: 5px 10px; border-radius: 4px; }
+            .btn-group-sync { flex-direction: column; width: 100%; }
+            .btn-group-sync button, .btn-group-sync a { width: 100% !important; margin-bottom: 5px; }
+        }
         @media print { .sidebar, .no-print, #mobile-toggle { display: none; } .main-content { margin: 0; padding: 0; } body { background: white; color: black; } }
     </style>
 </head>
@@ -69,14 +124,32 @@
     </div>
 
     <div id="modal-conflicto" class="modal-overlay">
-        <div class="modal-box" style="width: 700px; max-width: 95%;">
-            <h4 class="text-warning text-center mb-4"><i class="bi bi-exclamation-triangle-fill"></i> CONFLICTO DETECTADO</h4>
-            <div style="max-height: 300px; overflow-y: auto;" class="mb-4">
-                <table class="table-custom"><thead><th>Producto</th><th>Firebase</th><th>Sheets</th></thead><tbody id="lista-conflictos"></tbody></table>
+        <div class="modal-box" style="width: 800px; max-width: 95%;">
+            <h4 class="text-warning text-center mb-4"><i class="bi bi-exclamation-triangle-fill"></i> DIFERENCIAS DE INVENTARIO DETECTADAS</h4>
+            <p class="text-secondary text-center small mb-3">Se encontraron discrepancias entre la base de datos (Firebase) y el respaldo (Sheets).</p>
+            
+            <div style="max-height: 350px; overflow-y: auto;" class="mb-4">
+                <table class="table-custom">
+                    <thead>
+                        <th>Producto</th>
+                        <th>En Firebase (App)</th>
+                        <th>En Sheets (Excel)</th>
+                    </thead>
+                    <tbody id="lista-conflictos"></tbody>
+                </table>
             </div>
+            
             <div class="row g-2">
-                <div class="col-6"><button onclick="resolverConflicto('FIREBASE')" class="btn btn-outline-light w-100">MANTENER FIREBASE</button></div>
-                <div class="col-6"><button onclick="resolverConflicto('SHEETS')" class="btn btn-warning w-100 fw-bold">USAR SHEETS</button></div>
+                <div class="col-6">
+                    <button onclick="resolverConflicto('FIREBASE')" class="btn btn-outline-light w-100 py-2">
+                        <i class="bi bi-database-check"></i> MANTENER APP (FIREBASE)
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button onclick="resolverConflicto('SHEETS')" class="btn btn-warning w-100 fw-bold py-2">
+                        <i class="bi bi-file-earmark-arrow-down"></i> USAR EXCEL (SHEETS)
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -148,10 +221,10 @@
                             <i class="bi bi-file-earmark-spreadsheet-fill me-2"></i> VER EXCEL
                         </a>
                         <button class="btn btn-outline-success" onclick="syncFirebaseToSheets()">
-                            <i class="bi bi-cloud-upload"></i> A Sheets
+                            Firebase <i class="bi bi-arrow-right mx-1"></i> Sheets
                         </button>
                         <button class="btn btn-outline-warning" onclick="syncSheetsToFirebase()">
-                            <i class="bi bi-cloud-download"></i> De Sheets
+                            Sheets <i class="bi bi-arrow-right mx-1"></i> Firebase
                         </button>
                         <button class="btn-neon" style="width: auto;" onclick="modalNuevo('')"><i class="bi bi-plus-lg me-2"></i> NUEVO</button>
                     </div>
@@ -230,7 +303,9 @@
     </div>
 
 <script>
+    // --- ⚠️ URL DEL SCRIPT DE GOOGLE (ASEGURATE QUE ES LA VERSIÓN "EXEC" ACTUAL) ---
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziis4eKt8Ocj7iNq1injeiOVqds1JNHnwZLcHvFx2c48bTj2wiiBbAZP9xhZ56fT6G/exec"; 
+    
     const firebaseConfig = { apiKey: "AIzaSyBzUErnjQEGE9-neDh5z6VJ_xNaHRmAkew", authDomain: "garaje89-inventario.firebaseapp.com", projectId: "garaje89-inventario", storageBucket: "garaje89-inventario.firebasestorage.app", messagingSenderId: "538336429741", appId: "1:538336429741:web:0f7ce96f624f3568a8e824" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
@@ -257,7 +332,7 @@
                 showToast(`Bienvenido ${usuarioActual.nombre}`);
                 document.getElementById('scanner').focus();
                 
-                // --- AQUI SE DISPARA LA COMPARACIÓN AUTOMÁTICA ---
+                // --- INICIO AUTOMÁTICO DE COMPARACIÓN DE INVENTARIOS ---
                 verificarConflictosAlInicio();
             } else { showToast("Contraseña incorrecta", "error"); document.getElementById('login-pass').value=''; }
         }).catch(e => showToast("Error conexión", "error"));
@@ -388,51 +463,90 @@
     
     function generarPDF(tipo, items, total, codigo) {
         const { jsPDF } = window.jspdf; const doc = new jsPDF();
-        // HEADER NEGRO + TEXTO NEON
+        // --- CABECERA ---
         doc.setFillColor(0,0,0); doc.rect(0,0,210,40,'F'); 
-        doc.setTextColor(57,255,20); doc.setFontSize(22); doc.setFont("helvetica", "bold"); doc.text("GARAJE '89",105,20,null,null,"center");
-        doc.setTextColor(255,255,255); doc.setFontSize(10); doc.text("MECANICA & REPUESTOS",105,28,null,null,"center");
+        doc.setTextColor(57,255,20); doc.setFontSize(22); doc.setFont("helvetica", "bold"); 
+        doc.text("GARAJE '89",105,20,null,null,"center");
         
-        doc.setTextColor(0,0,0); doc.text(`FECHA: ${new Date().toLocaleString()}`,15,50); doc.text(`CÓDIGO: ${codigo}`,15,56); doc.text(`VENDEDOR: ${usuarioActual.nombre}`,15,62);
+        doc.setTextColor(255,255,255); doc.setFontSize(10); 
+        doc.text("MECANICA & REPUESTOS",105,28,null,null,"center");
+        
+        // --- DATOS VENTA ---
+        doc.setTextColor(0,0,0); 
+        doc.text(`FECHA: ${new Date().toLocaleString()}`,15,50); 
+        doc.text(`CÓDIGO: ${codigo}`,15,56); 
+        doc.text(`VENDEDOR: ${usuarioActual.nombre}`,15,62);
         
         doc.setFontSize(16);
-        if(tipo==='cotizar') { doc.setTextColor(100,100,100); doc.text("COTIZACIÓN",195,55,null,null,"right"); }
-        else { doc.setTextColor(0,0,0); doc.text("BOLETA DE VENTA",195,55,null,null,"right"); }
+        if(tipo==='cotizar') { 
+            doc.setTextColor(100,100,100); doc.text("COTIZACIÓN",195,55,null,null,"right"); 
+        } else { 
+            doc.setTextColor(0,0,0); doc.text("BOLETA DE VENTA",195,55,null,null,"right"); 
+        }
 
+        // --- TABLA DETALLE ---
         const body = items.map(i=>[i.codigo, i.nombre, i.cantidad, `S/ ${i.precio.toFixed(2)}`, `S/ ${(i.cantidad*i.precio).toFixed(2)}`]);
         doc.autoTable({
-            startY:70, head:[['COD','DESCRIPCION','CANT','P.UNIT','TOTAL']], body:body, theme:'grid',
+            startY:70, 
+            head:[['COD','DESCRIPCION','CANT','P.UNIT','TOTAL']], 
+            body:body, 
+            theme:'grid',
             headStyles:{fillColor:[0,0,0], textColor:[57,255,20], fontStyle:'bold'},
-            bodyStyles:{textColor:[0,0,0]}, styles:{fontSize:9}
+            bodyStyles:{textColor:[0,0,0]}, 
+            styles:{fontSize:9}
         });
         
+        // --- TOTAL ---
         doc.setFontSize(14); doc.setFont("helvetica", "bold");
         doc.text(`TOTAL A PAGAR: S/ ${total.toFixed(2)}`,195,doc.lastAutoTable.finalY+10,null,null,"right");
         
+        // --- FOOTER ---
         doc.setFontSize(8); doc.setFont("helvetica", "normal"); doc.setTextColor(0,0,0);
         doc.text("Gracias por su preferencia - No se aceptan devoluciones pasadas las 24hrs",105,280,null,null,"center");
         
         doc.save(`${codigo}.pdf`);
     }
 
+    // --- LÓGICA DE SINCRONIZACIÓN Y CONFLICTOS ---
     async function verificarConflictosAlInicio() {
         try {
             const res = await fetch(APPS_SCRIPT_URL, {method:'POST', body:JSON.stringify({action:"leerInventario"})});
-            const sData = await res.json(); const snap = await db.collection("inventario").get();
+            const sData = await res.json(); 
+            const snap = await db.collection("inventario").get();
             const fData = []; snap.forEach(d=>fData.push({...d.data(), fid:d.id}));
+            
             cambiosPendientes = []; const conf = [];
+            
+            // Comparar Sheets vs Firebase
             sData.forEach(s => {
                 const f = fData.find(x=>x.codigo===String(s.codigo));
-                if(f) { if(Number(f.stock)!==Number(s.stock) || Number(f.precio)!==Number(s.precio)) conf.push({tipo:'DIF', codigo:s.codigo, nombre:s.nombre, fire:f, sheet:s, fid:f.fid, dataFull:s}); }
-                else conf.push({tipo:'NEW', codigo:s.codigo, nombre:s.nombre, fire:"NO EXISTE", sheet:s, dataFull:s});
+                if(f) { 
+                    // Si existe, verificamos si stock o precio son diferentes
+                    if(Number(f.stock)!==Number(s.stock) || Number(f.precio)!==Number(s.precio)) {
+                        conf.push({tipo:'DIF', codigo:s.codigo, nombre:s.nombre, fire:f, sheet:s, fid:f.fid, dataFull:s}); 
+                    }
+                } else { 
+                    // Si no existe en Firebase (es nuevo en Sheets)
+                    conf.push({tipo:'NEW', codigo:s.codigo, nombre:s.nombre, fire:"NO EXISTE", sheet:s, dataFull:s});
+                }
             });
-            if(conf.length>0) { 
+
+            if(conf.length > 0) { 
+                // Mostrar alerta detallada
                 const tb = document.getElementById('lista-conflictos'); tb.innerHTML='';
-                conf.forEach(c => tb.innerHTML+=`<tr><td>${c.nombre}</td><td class="text-neon">${c.fire==="NO EXISTE"?"--":c.fire.stock}</td><td class="text-warning">${c.sheet.stock}</td></tr>`);
-                document.getElementById('modal-conflicto').classList.add('active'); cambiosPendientes=conf;
-            } else showToast("Sincronizado");
+                conf.forEach(c => {
+                    let fireInfo = c.fire==="NO EXISTE" ? "<span class='text-danger'>No existe</span>" : `Stk:${c.fire.stock} / $: ${c.fire.precio}`;
+                    let sheetInfo = `Stk:${c.sheet.stock} / $: ${c.sheet.precio}`;
+                    tb.innerHTML+=`<tr><td class="text-white">${c.nombre}<br><small class="text-secondary">${c.codigo}</small></td><td class="text-neon">${fireInfo}</td><td class="text-warning">${sheetInfo}</td></tr>`;
+                });
+                document.getElementById('modal-conflicto').classList.add('active'); 
+                cambiosPendientes = conf;
+            } else {
+                showToast("Sistemas Sincronizados");
+            }
         } catch(e) { console.error(e); }
     }
+
     function resolverConflicto(d) {
         document.getElementById('modal-conflicto').classList.remove('active');
         if(d==='SHEETS') {
@@ -441,19 +555,28 @@
                 if(c.tipo==='NEW') b.set(db.collection("inventario").doc(), {...c.dataFull, costo:Number(c.dataFull.costo), precio:Number(c.dataFull.precio), stock:Number(c.dataFull.stock)});
                 else b.update(db.collection("inventario").doc(c.fid), {precio:Number(c.dataFull.precio), stock:Number(c.dataFull.stock)});
             });
-            b.commit().then(()=>showToast("Actualizado"));
+            b.commit().then(()=>showToast("Actualizado con Sheets"));
+        } else {
+            showToast("Se mantiene datos de Firebase");
         }
     }
+
     function syncFirebaseToSheets() {
         if(confirm("¿Sobrescribir Excel con datos de la Web?")) {
-            showToast("Enviando...");
+            showToast("Enviando a Excel...");
             db.collection("inventario").get().then(snap => {
                 const l=[]; snap.forEach(d=>l.push(d.data()));
-                fetch(APPS_SCRIPT_URL, {method:'POST', body:JSON.stringify({action:"sobreescribirInventario", lista:l})}).then(()=>showToast("Excel Actualizado"));
+                fetch(APPS_SCRIPT_URL, {method:'POST', body:JSON.stringify({action:"sobreescribirInventario", lista:l})})
+                .then(res => res.json())
+                .then(data => showToast("Excel Actualizado Correctamente"))
+                .catch(e => showToast("Error al conectar con Sheets", "error"));
             });
         }
     }
-    function syncSheetsToFirebase() { if(confirm("¿Traer datos del Excel?")) verificarConflictosAlInicio(); }
+    
+    function syncSheetsToFirebase() { 
+        if(confirm("¿Traer datos del Excel?")) verificarConflictosAlInicio(); 
+    }
     
     function crearUser() {
         const id=document.getElementById('u-id').value, p=document.getElementById('u-pass').value;
