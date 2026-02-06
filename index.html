@@ -230,7 +230,7 @@
     </div>
 
 <script>
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwvoD4_lvCa-nrb5ijAYrcjKsHdETXRRwgouCfjE8Yi9e0BIhepZnC4E3N0pK6JyNo7/exec"; 
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziis4eKt8Ocj7iNq1injeiOVqds1JNHnwZLcHvFx2c48bTj2wiiBbAZP9xhZ56fT6G/exec"; 
     const firebaseConfig = { apiKey: "AIzaSyBzUErnjQEGE9-neDh5z6VJ_xNaHRmAkew", authDomain: "garaje89-inventario.firebaseapp.com", projectId: "garaje89-inventario", storageBucket: "garaje89-inventario.firebasestorage.app", messagingSenderId: "538336429741", appId: "1:538336429741:web:0f7ce96f624f3568a8e824" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
@@ -256,6 +256,8 @@
                 if(usuarioActual.permisos.rol !== 'admin') document.querySelectorAll('.admin-only').forEach(e => e.classList.add('oculto'));
                 showToast(`Bienvenido ${usuarioActual.nombre}`);
                 document.getElementById('scanner').focus();
+                
+                // --- AQUI SE DISPARA LA COMPARACIÓN AUTOMÁTICA ---
                 verificarConflictosAlInicio();
             } else { showToast("Contraseña incorrecta", "error"); document.getElementById('login-pass').value=''; }
         }).catch(e => showToast("Error conexión", "error"));
@@ -389,7 +391,7 @@
         // HEADER NEGRO + TEXTO NEON
         doc.setFillColor(0,0,0); doc.rect(0,0,210,40,'F'); 
         doc.setTextColor(57,255,20); doc.setFontSize(22); doc.setFont("helvetica", "bold"); doc.text("GARAJE '89",105,20,null,null,"center");
-        doc.setTextColor(255,255,255); doc.setFontSize(10); doc.text("SISTEMA DE GESTIÓN & REPUESTOS",105,28,null,null,"center");
+        doc.setTextColor(255,255,255); doc.setFontSize(10); doc.text("MECANICA & REPUESTOS",105,28,null,null,"center");
         
         doc.setTextColor(0,0,0); doc.text(`FECHA: ${new Date().toLocaleString()}`,15,50); doc.text(`CÓDIGO: ${codigo}`,15,56); doc.text(`VENDEDOR: ${usuarioActual.nombre}`,15,62);
         
