@@ -17,90 +17,38 @@
 
     <style>
         :root { --neon: #39ff14; --dark: #050505; --panel: rgba(20, 20, 20, 0.95); --border: rgba(57, 255, 20, 0.3); }
-        
-        body { 
-            background-color: var(--dark); color: #e0e0e0; font-family: 'Segoe UI', sans-serif; 
-            overflow-x: hidden; margin:0; 
-            background-image: radial-gradient(circle at 10% 20%, rgba(57, 255, 20, 0.05) 0%, transparent 20%);
-        }
-
-        /* --- SCROLL INVISIBLE --- */
-        ::-webkit-scrollbar { display: none; }
-        * { -ms-overflow-style: none; scrollbar-width: none; }
-
+        body { background-color: var(--dark); color: #e0e0e0; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; margin:0; background-image: radial-gradient(circle at 10% 20%, rgba(57, 255, 20, 0.05) 0%, transparent 20%); }
+        ::-webkit-scrollbar { display: none; } * { -ms-overflow-style: none; scrollbar-width: none; }
         .oculto { display: none !important; }
         .text-neon { color: var(--neon) !important; text-shadow: 0 0 10px rgba(57,255,20,0.4); }
-        
-        /* PANELES */
-        .glass-panel { 
-            background: var(--panel); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 25px; 
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); margin-bottom: 20px; transition: 0.3s;
-        }
-
-        /* INPUTS Y BOTONES */
-        .input-neon { 
-            background: rgba(0,0,0,0.4); border: 1px solid #444; color: white; padding: 10px 15px; 
-            width: 100%; border-radius: 6px; outline: none; transition: 0.3s;
-        }
+        .glass-panel { background: var(--panel); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 25px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); margin-bottom: 20px; transition: 0.3s; }
+        .input-neon { background: rgba(0,0,0,0.4); border: 1px solid #444; color: white; padding: 10px 15px; width: 100%; border-radius: 6px; outline: none; transition: 0.3s; }
         .input-neon:focus { border-color: var(--neon); box-shadow: 0 0 8px rgba(57,255,20,0.2); }
-        
-        .btn-neon { 
-            background: var(--neon); color: black; font-weight: 800; border: none; padding: 10px 20px; 
-            border-radius: 6px; width: 100%; text-transform: uppercase; cursor: pointer; transition: 0.3s; 
-            box-shadow: 0 0 10px rgba(57,255,20,0.2);
-        }
+        .btn-neon { background: var(--neon); color: black; font-weight: 800; border: none; padding: 10px 20px; border-radius: 6px; width: 100%; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px rgba(57,255,20,0.2); }
         .btn-neon:hover { transform: translateY(-2px); box-shadow: 0 0 20px var(--neon); }
-        
-        /* ESTILOS BOTONES OUTLINE (COMO PEDISTE) */
-        .btn-outline { 
-            background: transparent; border: 1px solid var(--neon); color: var(--neon); 
-            padding: 8px 15px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: bold; text-transform: uppercase;
-        }
+        .btn-outline { background: transparent; border: 1px solid var(--neon); color: var(--neon); padding: 8px 15px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: bold; text-transform: uppercase; }
         .btn-outline:hover { background: var(--neon); color: black; }
-
         .btn-outline-success { border-color: #198754; color: #198754; background: transparent; font-weight: bold; }
         .btn-outline-success:hover { background: #198754; color: white; }
-        
         .btn-outline-warning { border-color: #ffc107; color: #ffc107; background: transparent; font-weight: bold; }
         .btn-outline-warning:hover { background: #ffc107; color: black; }
-
-        /* SIDEBAR */
-        .sidebar { 
-            position: fixed; height: 100vh; width: 260px; 
-            background: #0a0a0a; border-right: 1px solid #222; 
-            padding-top: 20px; z-index: 2000; 
-            display: flex; flex-direction: column; transition: transform 0.3s;
-        }
+        .sidebar { position: fixed; height: 100vh; width: 260px; background: #0a0a0a; border-right: 1px solid #222; padding-top: 20px; z-index: 2000; display: flex; flex-direction: column; transition: transform 0.3s; }
         .nav-container { flex-grow: 1; overflow-y: auto; }
         .brand { font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 30px; letter-spacing: 2px; font-style: italic; }
         .nav-item { padding: 15px 25px; color: #888; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.2s; font-size: 1rem; }
         .nav-item:hover, .nav-item.active { color: var(--neon); background: rgba(57,255,20,0.05); border-left: 4px solid var(--neon); }
         .user-footer { padding: 20px; background: #000; border-top: 1px solid #222; text-align: center; }
-        
         .main-content { margin-left: 260px; padding: 20px; transition: 0.3s; }
-
-        /* TOAST & MODAL */
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
         .toast-msg { background: #111; border-left: 4px solid var(--neon); color: #fff; padding: 15px 20px; border-radius: 4px; display: flex; align-items: center; gap: 12px; min-width: 250px; border: 1px solid #333; animation: slideIn 0.3s ease-out forwards; }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 5000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s; }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
         .modal-box { background: #111; width: 420px; padding: 30px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 0 50px rgba(57,255,20,0.15); }
-        
-        /* TABLAS */
         .table-custom { width: 100%; border-collapse: separate; border-spacing: 0 5px; color: #ccc; }
         .table-custom th { text-align: left; padding: 12px; color: var(--neon); border-bottom: 1px solid #333; text-transform: uppercase; font-size: 0.85rem; }
         .table-custom td { padding: 12px; background: rgba(255,255,255,0.03); border: none; font-size: 0.95rem; }
-        
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); } .sidebar.active { transform: translateX(0); }
-            .main-content { margin-left: 0; padding: 15px; }
-            #mobile-toggle { display: block !important; position: fixed; top: 15px; left: 15px; z-index: 3000; background: #000; border: 1px solid var(--neon); color: var(--neon); padding: 5px 10px; border-radius: 4px; }
-            .btn-group-sync { flex-direction: column; width: 100%; }
-            .btn-group-sync button, .btn-group-sync a { width: 100% !important; margin-bottom: 5px; }
-        }
+        @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .sidebar.active { transform: translateX(0); } .main-content { margin-left: 0; padding: 15px; } #mobile-toggle { display: block !important; position: fixed; top: 15px; left: 15px; z-index: 3000; background: #000; border: 1px solid var(--neon); color: var(--neon); padding: 5px 10px; border-radius: 4px; } .btn-group-sync { flex-direction: column; width: 100%; } .btn-group-sync button, .btn-group-sync a { width: 100% !important; margin-bottom: 5px; } }
         @media print { .sidebar, .no-print, #mobile-toggle { display: none; } .main-content { margin: 0; padding: 0; } body { background: white; color: black; } }
     </style>
 </head>
@@ -282,7 +230,7 @@
     </div>
 
 <script>
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziis4eKt8Ocj7iNq1injeiOVqds1JNHnwZLcHvFx2c48bTj2wiiBbAZP9xhZ56fT6G/exec"; 
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwvoD4_lvCa-nrb5ijAYrcjKsHdETXRRwgouCfjE8Yi9e0BIhepZnC4E3N0pK6JyNo7/exec"; 
     const firebaseConfig = { apiKey: "AIzaSyBzUErnjQEGE9-neDh5z6VJ_xNaHRmAkew", authDomain: "garaje89-inventario.firebaseapp.com", projectId: "garaje89-inventario", storageBucket: "garaje89-inventario.firebasestorage.app", messagingSenderId: "538336429741", appId: "1:538336429741:web:0f7ce96f624f3568a8e824" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
@@ -421,7 +369,7 @@
         if(carrito.length === 0) return showToast("Vacío", "error");
         const tot = carrito.reduce((a,b)=>a+(b.cantidad*b.precio),0);
         const codV = "V-"+Date.now().toString().slice(-6);
-        if(tipo === 'cotizar') { generarPDF('cotizar', carrito, tot, codV); return; }
+        if(tipo === 'cotizar') { generarPDF('cotizar', carrito, tot, "COT-"+Date.now().toString().slice(-6)); return; }
         if(confirm("¿Confirmar?")) {
             const batch = db.batch();
             const itemsS = carrito.map(i=>({codigo:i.codigo, nombre:i.nombre, cantidad:i.cantidad, precio:i.precio}));
@@ -441,7 +389,7 @@
         // HEADER NEGRO + TEXTO NEON
         doc.setFillColor(0,0,0); doc.rect(0,0,210,40,'F'); 
         doc.setTextColor(57,255,20); doc.setFontSize(22); doc.setFont("helvetica", "bold"); doc.text("GARAJE '89",105,20,null,null,"center");
-        doc.setTextColor(255,255,255); doc.setFontSize(10); doc.text("MECANICA & REPUESTOS",105,28,null,null,"center");
+        doc.setTextColor(255,255,255); doc.setFontSize(10); doc.text("SISTEMA DE GESTIÓN & REPUESTOS",105,28,null,null,"center");
         
         doc.setTextColor(0,0,0); doc.text(`FECHA: ${new Date().toLocaleString()}`,15,50); doc.text(`CÓDIGO: ${codigo}`,15,56); doc.text(`VENDEDOR: ${usuarioActual.nombre}`,15,62);
         
