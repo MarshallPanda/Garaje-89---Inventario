@@ -3,194 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Garaje '89 | Sistema Pro</title>
+    <title>Garaje '89 Pro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* --- TEMA OSCURO GARAJE '89 --- */
-        :root { 
-            --neon: #39ff14; 
-            --dark: #121212; 
-            --panel: #1e1e1e; 
-            --border: #333; 
-        }
-        body { background-color: var(--dark); color: #e0e0e0; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; margin:0; }
+        :root { --neon: #39ff14; --dark: #050505; --panel: rgba(30, 30, 30, 0.6); --border: rgba(57, 255, 20, 0.2); }
+        body { background-color: var(--dark); color: #e0e0e0; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; margin:0; background-image: radial-gradient(circle at 50% 50%, #111 0%, #000 100%); }
         
-        /* PANTALLA DE CARGA MEJORADA */
-        #loader { 
-            position: fixed; top:0; left:0; width:100%; height:100%; 
-            background:rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index:99999; 
-            display:flex; justify-content:center; align-items:center; 
-            color:var(--neon); font-size:1.2rem; flex-direction:column;
-        }
-        
-        /* INPUTS Y BOTONES */
-        .input-neon { 
-            background: #000; border: 1px solid var(--border); color: white; 
-            padding: 12px; width: 100%; border-radius: 4px; box-sizing: border-box;
-        }
-        .input-neon:focus { outline: none; border-color: var(--neon); box-shadow: 0 0 5px rgba(57, 255, 20, 0.3); }
-        
-        .btn-neon { 
-            background: var(--neon); color: black; font-weight: bold; border: none; 
-            padding: 12px; width: 100%; border-radius: 4px; cursor: pointer; transition: 0.2s; 
-            text-transform: uppercase;
-        }
-        .btn-neon:hover { box-shadow: 0 0 15px var(--neon); transform: translateY(-2px); }
-        
-        /* UTILIDADES */
+        /* ESTILOS GLOBALES */
         .oculto { display: none !important; }
+        .text-neon { color: var(--neon) !important; text-shadow: 0 0 5px rgba(57,255,20,0.5); }
+        .glass-panel { background: var(--panel); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 20px; }
+        
+        /* INPUTS & BOTONES */
+        .input-neon { background: rgba(0,0,0,0.5); border: 1px solid #444; color: white; padding: 10px; border-radius: 6px; width: 100%; transition: 0.3s; }
+        .input-neon:focus { outline: none; border-color: var(--neon); box-shadow: 0 0 8px rgba(57,255,20,0.3); }
+        
+        .btn-neon { background: var(--neon); color: black; font-weight: 800; border: none; padding: 10px 20px; border-radius: 6px; width: 100%; text-transform: uppercase; transition: 0.3s; cursor: pointer; }
+        .btn-neon:hover { background: #32d911; box-shadow: 0 0 15px var(--neon); transform: scale(1.02); }
+        
+        .btn-outline { background: transparent; border: 1px solid var(--neon); color: var(--neon); padding: 8px 15px; border-radius: 6px; transition: 0.3s; cursor: pointer; }
+        .btn-outline:hover { background: var(--neon); color: black; }
 
-        /* SIDEBAR (MENÚ) */
-        .sidebar { 
-            position: fixed; height: 100vh; width: 250px; background: #0a0a0a; 
-            border-right: 1px solid var(--border); padding-top: 20px; z-index: 1000; 
-        }
-        .brand { 
-            color: var(--neon); text-align: center; font-size: 1.8rem; 
-            font-weight: bold; margin-bottom: 30px; letter-spacing: 2px; 
-            text-shadow: 0 0 10px rgba(57, 255, 20, 0.5); 
-        }
-        .nav-item { 
-            padding: 15px 20px; color: #888; cursor: pointer; 
-            display: flex; gap: 10px; transition: 0.3s; 
-        }
-        .nav-item:hover, .nav-item.active { 
-            color: var(--neon); background: rgba(57,255,20,0.05); 
-            border-left: 4px solid var(--neon); 
-        }
+        /* SIDEBAR */
+        .sidebar { position: fixed; height: 100vh; width: 260px; background: rgba(10,10,10,0.95); border-right: 1px solid var(--border); padding-top: 30px; z-index: 1000; }
+        .brand { font-size: 2rem; font-weight: 900; text-align: center; margin-bottom: 40px; letter-spacing: 3px; font-style: italic; }
+        .nav-item { padding: 15px 25px; color: #888; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.2s; font-size: 1.1rem; }
+        .nav-item:hover, .nav-item.active { color: var(--neon); background: rgba(57,255,20,0.05); border-left: 4px solid var(--neon); }
         
-        /* CONTENIDO PRINCIPAL */
-        .main-content { margin-left: 250px; padding: 30px; }
-        
-        .card-panel { 
-            background: var(--panel); padding: 25px; border-radius: 10px; 
-            border: 1px solid var(--border); margin-bottom: 20px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5); 
-        }
-        
+        .main-content { margin-left: 260px; padding: 40px; }
+
         /* TABLAS */
-        .table-custom { width: 100%; color: #ccc; border-collapse: collapse; }
-        .table-custom th { color: var(--neon); text-align: left; padding: 12px; border-bottom: 1px solid #444; }
-        .table-custom td { padding: 12px; border-bottom: 1px solid #222; }
-        .table-custom tr:hover { background: rgba(255,255,255,0.05); }
+        .table-custom { width: 100%; border-collapse: collapse; color: #ccc; }
+        .table-custom th { text-align: left; padding: 15px; color: var(--neon); border-bottom: 1px solid #444; }
+        .table-custom td { padding: 15px; border-bottom: 1px solid #222; }
+        .table-custom tr:hover { background: rgba(255,255,255,0.03); }
 
-        /* LOGIN Y MODAL (CENTRADOS Y SCROLLABLES) */
-        .login-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(3px);
-            z-index: 2000; display: flex; justify-content: center; align-items: center; 
-            padding: 20px; /* Espacio para que no pegue en bordes */
-        }
+        /* LOGIN */
+        .login-overlay { position: fixed; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; }
+        .login-box { background: rgba(20,20,20,0.95); width: 350px; padding: 40px; border-radius: 15px; border: 1px solid var(--border); text-align: center; box-shadow: 0 0 50px rgba(57,255,20,0.1); }
         
-        .login-box { 
-            background: var(--panel); padding: 30px; border-radius: 12px; 
-            width: 100%; max-width: 500px; 
-            border: 1px solid var(--border); text-align: center; 
-            box-shadow: 0 0 30px rgba(57, 255, 20, 0.1); 
-            
-            /* --- ESTO ARREGLA EL PROBLEMA DE QUE SE SALGA DE LA PANTALLA --- */
-            max-height: 90vh; /* Máximo el 90% de la altura de la pantalla */
-            overflow-y: auto; /* Si es más grande, agrega scroll interno */
-        }
+        /* MODAL FLOTANTE PEQUEÑO */
+        .modal-overlay { position: fixed; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 5000; display: flex; justify-content: center; align-items: center; }
+        .modal-box { background: #151515; width: 400px; padding: 25px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.8); animation: popIn 0.3s ease; }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* TEXTOS */
-        .stat-val { font-size: 2.5rem; font-weight: bold; color: white; }
-        .text-neon { color: var(--neon); }
+        /* LOADER DISCRETO */
+        .loader-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--neon); z-index: 99999; width: 0%; transition: width 0.3s; box-shadow: 0 0 10px var(--neon); }
 
-        @media print { 
-            .sidebar, .login-overlay, .no-print, #loader { display: none; } 
-            .main-content { margin: 0; } 
-            body { background: white; color: black; } 
-        }
+        /* USUARIOS LISTA */
+        .user-card { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; margin-bottom: 10px; border-radius: 6px; }
+
+        @media print { .sidebar, .no-print { display: none; } .main-content { margin: 0; padding: 0; } body { background: white; color: black; } }
     </style>
 </head>
 <body>
 
-    <div id="loader" class="oculto">
-        <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;"></div>
-        <span class="mt-3 text-neon fw-bold">Conectando...</span>
-    </div>
+    <div id="loader-bar" class="loader-bar"></div>
 
     <div id="login-overlay" class="login-overlay">
         <div class="login-box">
-            <h2 class="brand">GARAJE '89</h2>
-            <select id="login-user" class="input-neon mb-3">
-                <option>Cargando usuarios...</option>
-            </select>
-            <input type="password" id="login-pass" class="input-neon mb-3" placeholder="Contraseña">
-            <button onclick="login()" class="btn-neon">ACCEDER AL SISTEMA</button>
-            <p id="login-error" class="text-danger mt-3 small"></p>
+            <h1 class="brand text-neon">GARAJE '89</h1>
+            <p class="text-secondary mb-4">Selecciona tu usuario</p>
+            <select id="login-user" class="input-neon mb-3" style="text-align: center; font-size: 1.1rem;"></select>
+            <input type="password" id="login-pass" class="input-neon mb-4" placeholder="•••••••" style="text-align: center;">
+            <button onclick="login()" class="btn-neon">ENTRAR</button>
         </div>
     </div>
 
     <div id="app-container" class="oculto">
-        
         <div class="sidebar no-print">
-            <div class="brand">GARAJE '89</div>
-            <div class="nav-item active" onclick="nav('pos', this)"><i class="bi bi-cart"></i> Vender</div>
+            <div class="brand text-neon">GARAJE '89</div>
+            <div class="nav-item active" onclick="nav('pos', this)"><i class="bi bi-cart2"></i> Vender</div>
             <div class="nav-item" onclick="nav('entrada', this)"><i class="bi bi-box-arrow-in-down"></i> Entradas</div>
-            <div class="nav-item" onclick="nav('inv', this)"><i class="bi bi-box-seam"></i> Inventario</div>
+            <div class="nav-item" onclick="nav('inv', this)"><i class="bi bi-boxes"></i> Inventario</div>
             
             <div class="admin-only">
-                <hr style="border-color:#333; margin:15px 20px">
-                <div class="nav-item" onclick="nav('dash', this)"><i class="bi bi-graph-up"></i> Dashboard</div>
-                <div class="nav-item" onclick="nav('ventas', this)"><i class="bi bi-journal-text"></i> Historial</div>
-                <div class="nav-item" onclick="nav('users', this)"><i class="bi bi-people"></i> Usuarios</div>
+                <hr style="border-color:#333; margin:20px">
+                <div class="nav-item" onclick="nav('dash', this)"><i class="bi bi-bar-chart-fill"></i> Dashboard</div>
+                <div class="nav-item" onclick="nav('ventas', this)"><i class="bi bi-receipt-cutoff"></i> Historial</div>
+                <div class="nav-item" onclick="nav('users', this)"><i class="bi bi-people-fill"></i> Usuarios</div>
             </div>
             
-            <div style="position: absolute; bottom: 20px; width: 100%; text-align: center;">
-                <small id="user-display" style="color: #666; font-size: 0.8rem;"></small><br>
-                <button onclick="location.reload()" class="btn btn-sm btn-outline-danger mt-2" style="border-color: #555; color: #888;">Cerrar Sesión</button>
+            <div style="position: absolute; bottom: 30px; width: 100%; text-align: center;">
+                <span id="user-display" class="text-neon fw-bold"></span><br>
+                <a href="#" onclick="location.reload()" style="color:#666; font-size:0.8rem; text-decoration:none;">Cerrar Sesión</a>
             </div>
         </div>
 
         <div class="main-content">
             
             <div id="sec-pos" class="view-section">
-                <h3 class="mb-4 text-neon">PUNTO DE VENTA</h3>
-                <div class="card-panel">
-                    <input id="scanner" class="input-neon" style="font-size:1.3rem" placeholder="🔫 Escanear producto para vender..." autofocus>
+                <h3 class="mb-4 text-white"><i class="bi bi-cart2 text-neon"></i> PUNTO DE VENTA</h3>
+                <div class="glass-panel">
+                    <input id="scanner" class="input-neon" style="font-size:1.5rem; letter-spacing:2px" placeholder="🔫 Escanear código..." autofocus>
                 </div>
-                <div class="card-panel">
+                <div class="glass-panel">
                     <table class="table-custom">
                         <thead><th>Producto</th><th>Cant</th><th>Precio</th><th>Total</th><th></th></thead>
                         <tbody id="cart-body"></tbody>
                     </table>
-                    <div class="mt-4 pt-3 border-top border-secondary text-end">
-                        <h1 class="text-neon">S/ <span id="total-lbl">0.00</span></h1>
-                        <button onclick="finalizar('venta')" class="btn-neon mt-2" style="max-width: 250px;">CONFIRMAR VENTA</button>
+                    <div class="d-flex justify-content-between align-items-end mt-4 pt-3 border-top border-secondary">
+                        <div class="text-start">
+                            <button onclick="finalizar('cotizar')" class="btn-outline me-2"><i class="bi bi-file-earmark-pdf"></i> COTIZAR</button>
+                        </div>
+                        <div class="text-end">
+                            <h5 class="text-secondary">Total a Pagar</h5>
+                            <h1 class="text-neon display-4 fw-bold">S/ <span id="total-lbl">0.00</span></h1>
+                            <button onclick="finalizar('venta')" class="btn-neon mt-2 px-5">VENDER</button>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div id="sec-entrada" class="view-section oculto">
-                <h3 class="mb-4 text-neon">ENTRADAS DE STOCK</h3>
-                <div class="card-panel text-center py-5">
-                    <i class="bi bi-box-seam text-neon" style="font-size: 3rem;"></i>
-                    <h5 class="mt-3 mb-4">Escanea para sumar +1 al inventario</h5>
-                    <input id="scanner-entrada" class="input-neon mx-auto" style="font-size:1.5rem; text-align:center; max-width:500px" placeholder="Código aquí...">
-                    <h4 id="msg-entrada" class="mt-4 text-secondary">Esperando código...</h4>
+                <h3 class="mb-4 text-white">ENTRADAS RÁPIDAS</h3>
+                <div class="glass-panel text-center py-5">
+                    <div style="font-size:4rem; color:var(--neon); margin-bottom:20px"><i class="bi bi-box-seam-fill"></i></div>
+                    <h5>Escanea para sumar <span class="text-neon">+1</span> al stock</h5>
+                    <input id="scanner-entrada" class="input-neon mx-auto mt-4" style="max-width:400px; text-align:center; font-size:1.2rem" placeholder="Esperando código...">
+                    <p id="msg-entrada" class="mt-3 text-secondary">Listo.</p>
                 </div>
             </div>
 
             <div id="sec-inv" class="view-section oculto">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="text-neon m-0">INVENTARIO</h3>
-                    <button class="btn-neon" style="width:auto" onclick="modalNuevo('')">+ Nuevo Producto</button>
+                    <h3 class="text-white">INVENTARIO</h3>
+                    <button class="btn-neon" style="width:auto" onclick="modalNuevo('')"><i class="bi bi-plus-lg"></i> Nuevo</button>
                 </div>
-                <div class="card-panel">
+                <div class="glass-panel">
                     <div class="d-flex gap-2 mb-3">
-                        <select id="filtro-prov" class="input-neon" onchange="filtrarInv()">
-                            <option value="TODOS">Cargando...</option>
-                        </select>
-                        <button class="btn-neon" style="width:auto; background:#333; color:white; border:1px solid #555" onclick="cargarInv()">🔄</button>
+                        <select id="filtro-prov" class="input-neon" onchange="filtrarInv()"></select>
+                        <button class="btn-outline" onclick="cargarInv()"><i class="bi bi-arrow-clockwise"></i></button>
                     </div>
-                    <div style="max-height: 60vh; overflow-y: auto;">
+                    <div style="max-height: 65vh; overflow-y: auto;">
                         <table class="table-custom">
                             <thead><th>Cod</th><th>Nombre</th><th>Prov</th><th>Stock</th><th>Precio</th></thead>
                             <tbody id="inv-body"></tbody>
@@ -200,79 +151,79 @@
             </div>
 
             <div id="sec-dash" class="view-section oculto">
-                <h3 class="mb-4 text-neon">DASHBOARD</h3>
-                <div class="row g-4">
-                    <div class="col-md-6"><div class="card-panel text-center"><h5>Ventas Totales</h5><div class="stat-val text-neon">S/ <span id="d-hist">0.00</span></div></div></div>
-                    <div class="col-md-6"><div class="card-panel text-center"><h5>Ventas Hoy</h5><div class="stat-val text-neon">S/ <span id="d-hoy">0.00</span></div></div></div>
+                <h3 class="mb-4 text-white">ESTADÍSTICAS</h3>
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6"><div class="glass-panel">
+                        <h6 class="text-secondary">Ventas Totales</h6>
+                        <h2 class="text-neon">S/ <span id="d-hist">0.00</span></h2>
+                    </div></div>
+                    <div class="col-md-6"><div class="glass-panel">
+                        <h6 class="text-secondary">Vendido Hoy</h6>
+                        <h2 class="text-white">S/ <span id="d-hoy">0.00</span></h2>
+                    </div></div>
+                </div>
+                <div class="glass-panel">
+                    <h5 class="mb-4">Top 5 Productos Vendidos</h5>
+                    <canvas id="chartProds" style="max-height: 300px;"></canvas>
                 </div>
             </div>
 
             <div id="sec-ventas" class="view-section oculto">
-                <h3 class="mb-4 text-neon">HISTORIAL DE VENTAS</h3>
-                <button class="btn-neon mb-3" style="width:auto" onclick="cargarVentas()">Actualizar Tabla</button>
-                <div class="card-panel">
+                <h3 class="mb-4 text-white">HISTORIAL VENTAS</h3>
+                <button class="btn-outline mb-3" onclick="cargarVentas()">Actualizar</button>
+                <div class="glass-panel">
                     <table class="table-custom"><thead><th>Fecha</th><th>Vend</th><th>Prod</th><th>Total (Edit)</th><th></th></thead><tbody id="ventas-body"></tbody></table>
                 </div>
             </div>
 
             <div id="sec-users" class="view-section oculto">
-                <h3 class="mb-4 text-neon">GESTIÓN DE USUARIOS</h3>
-                <div class="card-panel" style="max-width:450px">
-                    <input id="u-id" class="input-neon mb-3" placeholder="ID Usuario (ej: juan)">
-                    <input id="u-nom" class="input-neon mb-3" placeholder="Nombre Completo">
-                    <input id="u-pass" class="input-neon mb-3" type="password" placeholder="Contraseña">
-                    <label class="text-secondary mb-1 small">Rol de Acceso</label>
-                    <select id="u-rol" class="input-neon mb-4"><option value="trabajador">Trabajador (Ventas/Inv)</option><option value="admin">Administrador (Total)</option></select>
-                    <button class="btn-neon" onclick="crearUser()">REGISTRAR USUARIO</button>
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="glass-panel">
+                            <h5 class="text-neon mb-3">Crear Usuario</h5>
+                            <input id="u-id" class="input-neon mb-2" placeholder="ID (ej: juan)">
+                            <input id="u-nom" class="input-neon mb-2" placeholder="Nombre Completo">
+                            <input id="u-pass" class="input-neon mb-2" type="password" placeholder="Contraseña">
+                            <select id="u-rol" class="input-neon mb-3"><option value="trabajador">Trabajador</option><option value="admin">Administrador</option></select>
+                            <button class="btn-neon" onclick="crearUser()">GUARDAR</button>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="glass-panel">
+                            <h5 class="mb-3">Usuarios Existentes</h5>
+                            <div id="users-list" style="max-height: 400px; overflow-y: auto;"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
 
-    <div id="modal-overlay" class="login-overlay oculto">
-        <div class="login-box" style="text-align:left;">
-            <h4 class="text-neon text-center mb-3 pb-2 border-bottom border-secondary">REGISTRAR PRODUCTO</h4>
-            
-            <div class="row g-2 mb-3">
-                <div class="col-12">
-                    <label class="small text-secondary">Código</label>
-                    <input id="n-codigo" class="input-neon" readonly style="background:#222; color:#777">
-                </div>
-                <div class="col-12">
-                    <label class="small text-secondary">Nombre</label>
-                    <input id="n-nombre" class="input-neon" placeholder="Ej: Aceite Motul">
-                </div>
-                <div class="col-12">
-                    <label class="small text-secondary">Proveedor</label>
-                    <select id="n-prov" class="input-neon" onchange="checkOtro(this)"></select>
-                    <input id="n-prov-txt" class="input-neon mt-2 oculto" placeholder="Nombre del nuevo proveedor...">
-                </div>
-                <div class="col-6">
-                    <label class="small text-secondary">Costo</label>
-                    <input id="n-costo" type="number" class="input-neon" placeholder="0.00">
-                </div>
-                <div class="col-6">
-                    <label class="small text-secondary">Precio Venta</label>
-                    <input id="n-precio" type="number" class="input-neon" placeholder="0.00">
-                </div>
-                <div class="col-12">
-                    <label class="small text-secondary">Stock Inicial</label>
-                    <input id="n-stock" type="number" class="input-neon" value="1">
-                </div>
+    <div id="modal-overlay" class="modal-overlay oculto">
+        <div class="modal-box">
+            <h5 class="text-neon text-center mb-3">NUEVO PRODUCTO</h5>
+            <input id="n-codigo" class="input-neon mb-2" readonly style="opacity:0.7">
+            <input id="n-nombre" class="input-neon mb-2" placeholder="Nombre del Producto">
+            <select id="n-prov" class="input-neon mb-2" onchange="checkOtro(this)"></select>
+            <input id="n-prov-txt" class="input-neon mb-2 oculto" placeholder="Nuevo Proveedor">
+            <div class="d-flex gap-2 mb-2">
+                <input id="n-costo" type="number" class="input-neon" placeholder="Costo">
+                <input id="n-precio" type="number" class="input-neon" placeholder="Precio">
             </div>
-            
-            <div class="d-flex gap-2 mt-4">
-                <button class="btn-neon" style="background:transparent; border:1px solid #555; color:#aaa" onclick="cerrarModal()">CANCELAR</button>
+            <input id="n-stock" type="number" class="input-neon mb-3" value="1" placeholder="Stock">
+            <div class="d-flex gap-2">
+                <button class="btn-outline" onclick="cerrarModal()">CANCELAR</button>
                 <button class="btn-neon" onclick="guardarNuevo()">GUARDAR</button>
             </div>
         </div>
     </div>
 
 <script>
-    // --- ⚠️ PEGA AQUÍ LA URL DE TU SCRIPT DE GOOGLE ⚠️ ---
+    // --- ⚠️⚠️ PEGA TU URL DE APPS SCRIPT AQUÍ ⚠️⚠️ ---
     const API_URL = "https://script.google.com/macros/s/AKfycbyxBQpIK46_VtCiXmtOwsnQvhGM_OIy2k0lM5_KfROrzjJIMHhPSeDq_ZZiHQXJsCY/exec";
 
-    // --- CONFIGURACIÓN FIREBASE (TUS DATOS REALES) ---
+    // --- CONFIG FIREBASE ---
     const firebaseConfig = {
         apiKey: "AIzaSyBzUErnjQEGE9-neDh5z6VJ_xNaHRmAkew",
         authDomain: "garaje89-inventario.firebaseapp.com",
@@ -286,38 +237,30 @@
 
     let usuarioActual = null, carrito = [], inventarioCache = [];
 
-    // --- CONECTOR API (FETCH) ---
+    // LOADER
+    function loading(show) { document.getElementById('loader-bar').style.width = show ? '100%' : '0%'; setTimeout(()=>document.getElementById('loader-bar').style.width='0%', 500); }
+
     async function callAPI(action, payload = {}) {
-        document.getElementById('loader').classList.remove('oculto');
+        loading(true);
         try {
-            const res = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action, ...payload })
-            });
-            const data = await res.json();
-            document.getElementById('loader').classList.add('oculto');
-            return data;
-        } catch (e) {
-            document.getElementById('loader').classList.add('oculto');
-            console.error(e);
-            return null;
-        }
+            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action, ...payload }) });
+            return await res.json();
+        } catch (e) { console.error(e); return null; }
     }
 
-    // --- INICIO ---
+    // INICIO
     window.onload = function() {
         const sel = document.getElementById('login-user');
         db.collection("usuarios").get().then(s => {
-            sel.innerHTML = '<option value="">Seleccionar Usuario...</option>';
+            sel.innerHTML = '<option value="">Selecciona tu usuario</option>';
             s.forEach(d => {
                 let data = d.data();
                 let o = document.createElement('option');
                 o.value = d.id; o.innerText = data.nombre;
                 sel.appendChild(o);
+                // Listar en sección usuarios
+                document.getElementById('users-list').innerHTML += `<div class="user-card"><span>${data.nombre} <small class="text-secondary">(${data.permisos.rol})</small></span></div>`;
             });
-        }).catch(e => {
-            console.error(e);
-            sel.innerHTML = '<option>Error Firebase</option>';
         });
     };
 
@@ -333,10 +276,8 @@
                 document.getElementById('app-container').classList.remove('oculto');
                 document.getElementById('user-display').innerText = usuarioActual.nombre;
                 if(usuarioActual.permisos.rol !== 'admin') document.querySelectorAll('.admin-only').forEach(e => e.classList.add('oculto'));
-                cargarProvModal(); 
-            } else {
-                document.getElementById('login-error').innerText = "Contraseña Incorrecta";
-            }
+                cargarProvModal();
+            } else { alert("Contraseña incorrecta"); }
         });
     }
 
@@ -345,7 +286,6 @@
         document.getElementById('sec-'+id).classList.remove('oculto');
         document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
         el.classList.add('active');
-        
         if(id==='pos') document.getElementById('scanner').focus();
         if(id==='entrada') document.getElementById('scanner-entrada').focus();
         if(id==='inv') cargarInv();
@@ -353,20 +293,13 @@
         if(id==='dash') cargarDash();
     }
 
-    // --- POS (VENTA + REGISTRO AUTOMÁTICO) ---
+    // POS
     document.getElementById('scanner').addEventListener('keypress', async function(e){
         if(e.key==='Enter'){
             let c = this.value; this.value='';
             const r = await callAPI('escanear', { codigo: c });
-            
-            if(r && r.status==='encontrado') {
-                addCar(r.producto);
-            } else {
-                // AQUÍ ESTÁ LA MEJORA: Abrir modal si no existe
-                if(confirm("⚠️ Producto no encontrado.\n¿Quieres registrarlo ahora?")) {
-                    modalNuevo(c);
-                }
-            }
+            if(r && r.status==='encontrado') addCar(r.producto);
+            else if(confirm("⚠️ Producto nuevo. ¿Registrar?")) modalNuevo(c);
         }
     });
 
@@ -379,7 +312,7 @@
         let h='', t=0;
         carrito.forEach((p,i)=>{
             t+=p.cantidad*p.precio;
-            h+=`<tr><td>${p.nombre}</td><td>${p.cantidad}</td><td>S/ ${p.precio}</td><td>S/ ${(p.cantidad*p.precio).toFixed(2)}</td><td><button class="btn-neon" style="background:red; padding:5px" onclick="del(${i})"><i class="bi bi-trash"></i></button></td></tr>`;
+            h+=`<tr><td>${p.nombre}</td><td>${p.cantidad}</td><td>S/ ${p.precio}</td><td>S/ ${(p.cantidad*p.precio).toFixed(2)}</td><td><button class="btn-outline" style="border-color:red; color:red; padding:2px 8px" onclick="del(${i})"><i class="bi bi-trash"></i></button></td></tr>`;
         });
         document.getElementById('cart-body').innerHTML=h;
         document.getElementById('total-lbl').innerText=t.toFixed(2);
@@ -390,118 +323,85 @@
         if(t==='venta'){
             if(!confirm("¿Procesar venta?")) return;
             await callAPI('venta', {vendedor:usuarioActual.nombre, items:carrito});
-            window.print(); carrito=[]; renderCar();
-        } else window.print();
+            alert("Venta Exitosa");
+        }
+        window.print(); carrito=[]; renderCar();
     }
 
-    // --- ENTRADAS (STOCK +1) ---
+    // ENTRADAS
     document.getElementById('scanner-entrada').addEventListener('keypress', async function(e){
         if(e.key==='Enter'){
             let c = this.value; this.value='';
-            document.getElementById('msg-entrada').innerText = "Buscando...";
+            document.getElementById('msg-entrada').innerText = "Procesando...";
             const r = await callAPI('entradaStock', {codigo:c});
             if(r.status==='actualizado'){
-                document.getElementById('msg-entrada').innerText = "✅ Stock +1: " + r.producto.nombre + " (" + r.producto.nuevo_stock + ")";
-                document.getElementById('msg-entrada').style.color = "var(--neon)";
-            } else {
-                document.getElementById('msg-entrada').innerText = "Producto nuevo. Abriendo registro...";
-                document.getElementById('msg-entrada').style.color = "yellow";
-                modalNuevo(c);
-            }
+                document.getElementById('msg-entrada').innerText = `✅ Agregado: ${r.producto.nombre} (Stock: ${r.producto.nuevo_stock})`;
+                document.getElementById('msg-entrada').className = "mt-3 text-neon";
+            } else modalNuevo(c);
         }
     });
 
-    // --- INVENTARIO ---
-    async function cargarInv(){
-        const d = await callAPI('leerInventario');
-        if(d) { inventarioCache=d; filtrarInv(); cargarProvModal(); }
-    }
+    // INVENTARIO & MODAL
+    async function cargarInv(){ const d = await callAPI('leerInventario'); if(d) { inventarioCache=d; filtrarInv(); cargarProvModal(); } }
     function filtrarInv(){
-        let f = document.getElementById('filtro-prov').value;
-        let h = '';
-        inventarioCache.forEach(r=>{
-            if(f==='TODOS' || r[2]===f) h+=`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[5]}</td><td>${r[4]}</td></tr>`;
-        });
+        let f = document.getElementById('filtro-prov').value, h = '';
+        inventarioCache.forEach(r=>{ if(f==='TODOS' || r[2]===f) h+=`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[5]}</td><td>${r[4]}</td></tr>`; });
         document.getElementById('inv-body').innerHTML=h;
     }
-
-    // --- MODAL Y PROVEEDORES ---
-    function modalNuevo(c){ 
-        document.getElementById('modal-overlay').classList.remove('oculto'); 
-        document.getElementById('n-codigo').value=c||''; 
-        cargarProvModal(); 
-    }
+    function modalNuevo(c){ document.getElementById('modal-overlay').classList.remove('oculto'); document.getElementById('n-codigo').value=c||''; cargarProvModal(); }
     function cerrarModal(){ document.getElementById('modal-overlay').classList.add('oculto'); }
-    
     async function cargarProvModal(){
-        // Cargar proveedores desde la API
         const l = await callAPI('leerProveedores');
         if(!l) return;
-        
         let s = document.getElementById('filtro-prov'); s.innerHTML='<option value="TODOS">Todos</option>';
-        let m = document.getElementById('n-prov'); m.innerHTML='<option value="">Seleccionar...</option><option value="OTRO">➕ Nuevo Proveedor</option>';
-        
-        l.forEach(p=>{ 
-            s.innerHTML+=`<option value="${p}">${p}</option>`; 
-            m.innerHTML+=`<option value="${p}">${p}</option>`; 
-        });
+        let m = document.getElementById('n-prov'); m.innerHTML='<option value="">Seleccionar...</option><option value="OTRO">➕ Nuevo</option>';
+        l.forEach(p=>{ s.innerHTML+=`<option value="${p}">${p}</option>`; m.innerHTML+=`<option value="${p}">${p}</option>`; });
     }
-    
-    function checkOtro(s){
-        if(s.value==='OTRO') { 
-            document.getElementById('n-prov-txt').classList.remove('oculto'); 
-            document.getElementById('n-prov-txt').focus(); 
-        }
-        else document.getElementById('n-prov-txt').classList.add('oculto');
-    }
-    
+    function checkOtro(s){ if(s.value==='OTRO') { document.getElementById('n-prov-txt').classList.remove('oculto'); document.getElementById('n-prov-txt').focus(); } else document.getElementById('n-prov-txt').classList.add('oculto'); }
     async function guardarNuevo(){
-        let p = document.getElementById('n-prov').value;
-        if(p==='OTRO') p = document.getElementById('n-prov-txt').value;
-        if(!p) return alert("Falta proveedor");
-        
-        let f = { 
-            codigo:document.getElementById('n-codigo').value, 
-            nombre:document.getElementById('n-nombre').value, 
-            proveedor:p, 
-            costo:document.getElementById('n-costo').value, 
-            precio:document.getElementById('n-precio').value, 
-            stock:document.getElementById('n-stock').value 
-        };
-        
+        let p = document.getElementById('n-prov').value; if(p==='OTRO') p = document.getElementById('n-prov-txt').value;
+        let f = { codigo:document.getElementById('n-codigo').value, nombre:document.getElementById('n-nombre').value, proveedor:p, costo:document.getElementById('n-costo').value, precio:document.getElementById('n-precio').value, stock:document.getElementById('n-stock').value };
         await callAPI('guardarProducto', {form:f});
-        alert("Guardado"); 
-        cerrarModal();
-        
-        // Refrescar según dónde estemos
-        if(!document.getElementById('sec-entrada').classList.contains('oculto')) {
-            document.getElementById('scanner-entrada').focus();
-            document.getElementById('msg-entrada').innerText = "Listo. Siguiente...";
-        } else if (!document.getElementById('sec-pos').classList.contains('oculto')) {
-            // Si estábamos vendiendo, agregarlo al carrito de una vez
-            addCar({codigo:f.codigo, nombre:f.nombre, precio:f.precio, cantidad:1});
-        } else {
-            cargarInv();
-        }
+        cerrarModal(); cargarInv();
     }
 
-    // --- ADMIN ---
+    // ADMIN & DASH
     async function cargarVentas(){
         const d = await callAPI('leerVentas');
-        let h='';
-        d.forEach(r=>{ h+=`<tr><td>${new Date(r[1]).toLocaleDateString()}</td><td>${r[2]}</td><td>${r[4]}</td><td><input class="input-neon" style="width:80px; padding:5px" value="${r[7]}" onchange="editV('${r[0]}',this.value)"></td><td><button class="btn-neon" style="background:red; padding:5px" onclick="delV('${r[0]}')"><i class="bi bi-trash"></i></button></td></tr>`; });
+        let h=''; d.forEach(r=>{ h+=`<tr><td>${new Date(r[1]).toLocaleDateString()}</td><td>${r[2]}</td><td>${r[4]}</td><td><input class="input-neon" style="width:70px; padding:2px" value="${r[7]}" onchange="editV('${r[0]}',this.value)"></td><td><button class="btn-outline" style="border-color:red; color:red; padding:2px" onclick="delV('${r[0]}')">X</button></td></tr>`; });
         document.getElementById('ventas-body').innerHTML=h;
     }
     async function editV(id,v){ await callAPI('editarVenta', {id, total:v}); }
     async function delV(id){ if(confirm("¿Eliminar?")) { await callAPI('eliminarVenta', {id}); cargarVentas(); } }
+    
+    let myChart;
     async function cargarDash(){
         const d = await callAPI('dashboard');
         document.getElementById('d-hist').innerText = d.totalHistorico.toFixed(2);
         document.getElementById('d-hoy').innerText = d.totalHoy.toFixed(2);
+        
+        // GRÁFICO
+        const ctx = document.getElementById('chartProds').getContext('2d');
+        if(myChart) myChart.destroy();
+        myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: d.topProductos.map(p => p.name),
+                datasets: [{
+                    label: 'Unidades Vendidas',
+                    data: d.topProductos.map(p => p.count),
+                    backgroundColor: 'rgba(57, 255, 20, 0.5)',
+                    borderColor: '#39ff14',
+                    borderWidth: 1
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true, grid: { color: '#333' } }, x: { grid: { color: '#333' } } }, plugins: { legend: { labels: { color: 'white' } } } }
+        });
     }
+
     function crearUser(){
         let i=document.getElementById('u-id').value; let n=document.getElementById('u-nom').value; let p=document.getElementById('u-pass').value; let r=document.getElementById('u-rol').value;
-        db.collection("usuarios").doc(i).set({nombre:n, contraseña:p, permisos:{rol:r}}).then(()=>alert("Creado"));
+        db.collection("usuarios").doc(i).set({nombre:n, contraseña:p, permisos:{rol:r}}).then(()=>{ alert("Usuario Creado"); location.reload(); });
     }
 </script>
 </body>
