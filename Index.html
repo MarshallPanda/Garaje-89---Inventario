@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Garaje '89 | Sistema</title>
+    <title>Garaje '89 | Sistema Pro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     
@@ -20,12 +20,12 @@
         }
         body { background-color: var(--dark); color: #e0e0e0; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; margin:0; }
         
-        /* PANTALLA DE CARGA */
+        /* PANTALLA DE CARGA MEJORADA */
         #loader { 
             position: fixed; top:0; left:0; width:100%; height:100%; 
-            background:rgba(0,0,0,0.9); z-index:99999; 
+            background:rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index:99999; 
             display:flex; justify-content:center; align-items:center; 
-            color:var(--neon); font-size:1.5rem; flex-direction:column;
+            color:var(--neon); font-size:1.2rem; flex-direction:column;
         }
         
         /* INPUTS Y BOTONES */
@@ -33,14 +33,14 @@
             background: #000; border: 1px solid var(--border); color: white; 
             padding: 12px; width: 100%; border-radius: 4px; box-sizing: border-box;
         }
-        .input-neon:focus { outline: none; border-color: var(--neon); }
+        .input-neon:focus { outline: none; border-color: var(--neon); box-shadow: 0 0 5px rgba(57, 255, 20, 0.3); }
         
         .btn-neon { 
             background: var(--neon); color: black; font-weight: bold; border: none; 
-            padding: 12px; width: 100%; border-radius: 4px; cursor: pointer; transition: 0.3s; 
+            padding: 12px; width: 100%; border-radius: 4px; cursor: pointer; transition: 0.2s; 
             text-transform: uppercase;
         }
-        .btn-neon:hover { box-shadow: 0 0 15px var(--neon); transform: scale(1.02); }
+        .btn-neon:hover { box-shadow: 0 0 15px var(--neon); transform: translateY(-2px); }
         
         /* UTILIDADES */
         .oculto { display: none !important; }
@@ -53,7 +53,7 @@
         .brand { 
             color: var(--neon); text-align: center; font-size: 1.8rem; 
             font-weight: bold; margin-bottom: 30px; letter-spacing: 2px; 
-            text-shadow: 0 0 5px var(--neon); 
+            text-shadow: 0 0 10px rgba(57, 255, 20, 0.5); 
         }
         .nav-item { 
             padding: 15px 20px; color: #888; cursor: pointer; 
@@ -70,7 +70,7 @@
         .card-panel { 
             background: var(--panel); padding: 25px; border-radius: 10px; 
             border: 1px solid var(--border); margin-bottom: 20px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5); 
         }
         
         /* TABLAS */
@@ -79,15 +79,23 @@
         .table-custom td { padding: 12px; border-bottom: 1px solid #222; }
         .table-custom tr:hover { background: rgba(255,255,255,0.05); }
 
-        /* LOGIN */
+        /* LOGIN Y MODAL (CENTRADOS Y SCROLLABLES) */
         .login-overlay { 
-            position: fixed; width: 100%; height: 100%; background: #000; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(3px);
             z-index: 2000; display: flex; justify-content: center; align-items: center; 
+            padding: 20px; /* Espacio para que no pegue en bordes */
         }
+        
         .login-box { 
-            background: var(--panel); padding: 40px; border-radius: 12px; 
-            width: 380px; border: 1px solid var(--border); text-align: center; 
-            box-shadow: 0 0 30px rgba(57, 255, 20, 0.15); 
+            background: var(--panel); padding: 30px; border-radius: 12px; 
+            width: 100%; max-width: 500px; 
+            border: 1px solid var(--border); text-align: center; 
+            box-shadow: 0 0 30px rgba(57, 255, 20, 0.1); 
+            
+            /* --- ESTO ARREGLA EL PROBLEMA DE QUE SE SALGA DE LA PANTALLA --- */
+            max-height: 90vh; /* Máximo el 90% de la altura de la pantalla */
+            overflow-y: auto; /* Si es más grande, agrega scroll interno */
         }
 
         /* TEXTOS */
@@ -104,8 +112,8 @@
 <body>
 
     <div id="loader" class="oculto">
-        <div class="spinner-border text-success" role="status"></div>
-        <span class="mt-3">Conectando con Google Sheets...</span>
+        <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;"></div>
+        <span class="mt-3 text-neon fw-bold">Conectando...</span>
     </div>
 
     <div id="login-overlay" class="login-overlay">
@@ -221,21 +229,36 @@
         </div>
     </div>
 
-    <div id="modal-overlay" class="login-overlay oculto" style="background:rgba(0,0,0,0.95)">
-        <div class="login-box" style="text-align:left; max-width:550px">
-            <h4 class="text-neon text-center mb-4 pb-2 border-bottom border-secondary">REGISTRAR PRODUCTO</h4>
+    <div id="modal-overlay" class="login-overlay oculto">
+        <div class="login-box" style="text-align:left;">
+            <h4 class="text-neon text-center mb-3 pb-2 border-bottom border-secondary">REGISTRAR PRODUCTO</h4>
             
             <div class="row g-2 mb-3">
-                <div class="col-12"><label class="small text-secondary">Código</label><input id="n-codigo" class="input-neon" readonly style="background:#222; color:#777"></div>
-                <div class="col-12"><label class="small text-secondary">Nombre</label><input id="n-nombre" class="input-neon"></div>
+                <div class="col-12">
+                    <label class="small text-secondary">Código</label>
+                    <input id="n-codigo" class="input-neon" readonly style="background:#222; color:#777">
+                </div>
+                <div class="col-12">
+                    <label class="small text-secondary">Nombre</label>
+                    <input id="n-nombre" class="input-neon" placeholder="Ej: Aceite Motul">
+                </div>
                 <div class="col-12">
                     <label class="small text-secondary">Proveedor</label>
                     <select id="n-prov" class="input-neon" onchange="checkOtro(this)"></select>
-                    <input id="n-prov-txt" class="input-neon mt-2 oculto" placeholder="Nuevo proveedor...">
+                    <input id="n-prov-txt" class="input-neon mt-2 oculto" placeholder="Nombre del nuevo proveedor...">
                 </div>
-                <div class="col-6"><label class="small text-secondary">Costo</label><input id="n-costo" type="number" class="input-neon"></div>
-                <div class="col-6"><label class="small text-secondary">Precio Venta</label><input id="n-precio" type="number" class="input-neon"></div>
-                <div class="col-12"><label class="small text-secondary">Stock Inicial</label><input id="n-stock" type="number" class="input-neon" value="1"></div>
+                <div class="col-6">
+                    <label class="small text-secondary">Costo</label>
+                    <input id="n-costo" type="number" class="input-neon" placeholder="0.00">
+                </div>
+                <div class="col-6">
+                    <label class="small text-secondary">Precio Venta</label>
+                    <input id="n-precio" type="number" class="input-neon" placeholder="0.00">
+                </div>
+                <div class="col-12">
+                    <label class="small text-secondary">Stock Inicial</label>
+                    <input id="n-stock" type="number" class="input-neon" value="1">
+                </div>
             </div>
             
             <div class="d-flex gap-2 mt-4">
@@ -246,7 +269,7 @@
     </div>
 
 <script>
-    // --- ✅ TU API DE GOOGLE APPS SCRIPT ---
+    // --- ⚠️ PEGA AQUÍ LA URL DE TU SCRIPT DE GOOGLE ⚠️ ---
     const API_URL = "https://script.google.com/macros/s/AKfycbyxBQpIK46_VtCiXmtOwsnQvhGM_OIy2k0lM5_KfROrzjJIMHhPSeDq_ZZiHQXJsCY/exec";
 
     // --- CONFIGURACIÓN FIREBASE (TUS DATOS REALES) ---
@@ -267,8 +290,6 @@
     async function callAPI(action, payload = {}) {
         document.getElementById('loader').classList.remove('oculto');
         try {
-            // Enviamos POST con 'no-cors' no funciona para leer respuesta, usamos fetch standard
-            // Apps Script debe estar publicado como "Cualquiera" para evitar CORS preflight issues
             const res = await fetch(API_URL, {
                 method: 'POST',
                 body: JSON.stringify({ action, ...payload })
@@ -286,7 +307,6 @@
     // --- INICIO ---
     window.onload = function() {
         const sel = document.getElementById('login-user');
-        // Cargamos usuarios desde Firebase
         db.collection("usuarios").get().then(s => {
             sel.innerHTML = '<option value="">Seleccionar Usuario...</option>';
             s.forEach(d => {
@@ -313,7 +333,7 @@
                 document.getElementById('app-container').classList.remove('oculto');
                 document.getElementById('user-display').innerText = usuarioActual.nombre;
                 if(usuarioActual.permisos.rol !== 'admin') document.querySelectorAll('.admin-only').forEach(e => e.classList.add('oculto'));
-                cargarProvModal(); // Pre-cargar proveedores del Sheet
+                cargarProvModal(); 
             } else {
                 document.getElementById('login-error').innerText = "Contraseña Incorrecta";
             }
@@ -333,13 +353,20 @@
         if(id==='dash') cargarDash();
     }
 
-    // --- POS (VENTA) ---
+    // --- POS (VENTA + REGISTRO AUTOMÁTICO) ---
     document.getElementById('scanner').addEventListener('keypress', async function(e){
         if(e.key==='Enter'){
             let c = this.value; this.value='';
             const r = await callAPI('escanear', { codigo: c });
-            if(r && r.status==='encontrado') addCar(r.producto);
-            else alert("Producto no existe en inventario.");
+            
+            if(r && r.status==='encontrado') {
+                addCar(r.producto);
+            } else {
+                // AQUÍ ESTÁ LA MEJORA: Abrir modal si no existe
+                if(confirm("⚠️ Producto no encontrado.\n¿Quieres registrarlo ahora?")) {
+                    modalNuevo(c);
+                }
+            }
         }
     });
 
@@ -374,7 +401,7 @@
             document.getElementById('msg-entrada').innerText = "Buscando...";
             const r = await callAPI('entradaStock', {codigo:c});
             if(r.status==='actualizado'){
-                document.getElementById('msg-entrada').innerText = "✅ " + r.producto.nombre + " (Stock: " + r.producto.nuevo_stock + ")";
+                document.getElementById('msg-entrada').innerText = "✅ Stock +1: " + r.producto.nombre + " (" + r.producto.nuevo_stock + ")";
                 document.getElementById('msg-entrada').style.color = "var(--neon)";
             } else {
                 document.getElementById('msg-entrada').innerText = "Producto nuevo. Abriendo registro...";
@@ -398,32 +425,64 @@
         document.getElementById('inv-body').innerHTML=h;
     }
 
-    // --- MODAL ---
-    function modalNuevo(c){ document.getElementById('modal-overlay').classList.remove('oculto'); document.getElementById('n-codigo').value=c||''; cargarProvModal(); }
+    // --- MODAL Y PROVEEDORES ---
+    function modalNuevo(c){ 
+        document.getElementById('modal-overlay').classList.remove('oculto'); 
+        document.getElementById('n-codigo').value=c||''; 
+        cargarProvModal(); 
+    }
     function cerrarModal(){ document.getElementById('modal-overlay').classList.add('oculto'); }
     
     async function cargarProvModal(){
+        // Cargar proveedores desde la API
         const l = await callAPI('leerProveedores');
         if(!l) return;
+        
         let s = document.getElementById('filtro-prov'); s.innerHTML='<option value="TODOS">Todos</option>';
         let m = document.getElementById('n-prov'); m.innerHTML='<option value="">Seleccionar...</option><option value="OTRO">➕ Nuevo Proveedor</option>';
-        l.forEach(p=>{ s.innerHTML+=`<option value="${p}">${p}</option>`; m.innerHTML+=`<option value="${p}">${p}</option>`; });
+        
+        l.forEach(p=>{ 
+            s.innerHTML+=`<option value="${p}">${p}</option>`; 
+            m.innerHTML+=`<option value="${p}">${p}</option>`; 
+        });
     }
+    
     function checkOtro(s){
-        if(s.value==='OTRO') { document.getElementById('n-prov-txt').classList.remove('oculto'); document.getElementById('n-prov-txt').focus(); }
+        if(s.value==='OTRO') { 
+            document.getElementById('n-prov-txt').classList.remove('oculto'); 
+            document.getElementById('n-prov-txt').focus(); 
+        }
         else document.getElementById('n-prov-txt').classList.add('oculto');
     }
+    
     async function guardarNuevo(){
         let p = document.getElementById('n-prov').value;
         if(p==='OTRO') p = document.getElementById('n-prov-txt').value;
         if(!p) return alert("Falta proveedor");
-        let f = { codigo:document.getElementById('n-codigo').value, nombre:document.getElementById('n-nombre').value, proveedor:p, costo:document.getElementById('n-costo').value, precio:document.getElementById('n-precio').value, stock:document.getElementById('n-stock').value };
+        
+        let f = { 
+            codigo:document.getElementById('n-codigo').value, 
+            nombre:document.getElementById('n-nombre').value, 
+            proveedor:p, 
+            costo:document.getElementById('n-costo').value, 
+            precio:document.getElementById('n-precio').value, 
+            stock:document.getElementById('n-stock').value 
+        };
+        
         await callAPI('guardarProducto', {form:f});
-        alert("Guardado"); cerrarModal();
+        alert("Guardado"); 
+        cerrarModal();
+        
+        // Refrescar según dónde estemos
         if(!document.getElementById('sec-entrada').classList.contains('oculto')) {
             document.getElementById('scanner-entrada').focus();
             document.getElementById('msg-entrada').innerText = "Listo. Siguiente...";
-        } else cargarInv();
+        } else if (!document.getElementById('sec-pos').classList.contains('oculto')) {
+            // Si estábamos vendiendo, agregarlo al carrito de una vez
+            addCar({codigo:f.codigo, nombre:f.nombre, precio:f.precio, cantidad:1});
+        } else {
+            cargarInv();
+        }
     }
 
     // --- ADMIN ---
