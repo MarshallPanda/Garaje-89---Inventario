@@ -97,6 +97,13 @@
         .table-custom th { text-align: left; padding: 12px; color: var(--neon); border-bottom: 1px solid #333; text-transform: uppercase; font-size: 0.85rem; }
         .table-custom td { padding: 12px; background: rgba(255,255,255,0.03); border: none; font-size: 0.95rem; }
         
+        /* ESTILO TARJETA USUARIO */
+        .user-card { 
+            background: rgba(255,255,255,0.04); border-radius: 8px; padding: 15px; 
+            border: 1px solid rgba(255,255,255,0.05); transition: 0.3s;
+        }
+        .user-card:hover { background: rgba(255,255,255,0.08); border-color: var(--neon); }
+
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); } .sidebar.active { transform: translateX(0); }
             .main-content { margin-left: 0; padding: 15px; }
@@ -125,9 +132,7 @@
 
     <div id="modal-conflicto" class="modal-overlay">
         <div class="modal-box" style="width: 800px; max-width: 95%;">
-            <h4 class="text-warning text-center mb-4"><i class="bi bi-exclamation-triangle-fill"></i> DIFERENCIAS DE INVENTARIO DETECTADAS</h4>
-            <p class="text-secondary text-center small mb-3">Se encontraron discrepancias entre la base de datos (Firebase) y el respaldo (Sheets).</p>
-            
+            <h4 class="text-warning text-center mb-4"><i class="bi bi-exclamation-triangle-fill"></i> DIFERENCIAS DE INVENTARIO</h4>
             <div style="max-height: 350px; overflow-y: auto;" class="mb-4">
                 <table class="table-custom">
                     <thead>
@@ -138,7 +143,6 @@
                     <tbody id="lista-conflictos"></tbody>
                 </table>
             </div>
-            
             <div class="row g-2">
                 <div class="col-6">
                     <button onclick="resolverConflicto('FIREBASE')" class="btn btn-outline-light w-100 py-2">
@@ -265,19 +269,27 @@
             </div>
 
             <div id="sec-users" class="view-section oculto">
-                <h3 class="text-white mb-4">USUARIOS</h3>
+                <h3 class="text-white mb-4">GESTIÓN DE EQUIPO</h3>
                 <div class="row g-4">
-                    <div class="col-md-5">
-                        <div class="glass-panel">
-                            <h5 class="text-neon mb-3">NUEVO</h5>
-                            <input id="u-id" class="input-neon mb-2" placeholder="ID">
-                            <input id="u-nom" class="input-neon mb-2" placeholder="Nombre">
-                            <input id="u-pass" class="input-neon mb-2" type="password" placeholder="Clave">
-                            <select id="u-rol" class="input-neon mb-3"><option value="trabajador">Trabajador</option><option value="admin">Admin</option></select>
-                            <button class="btn-neon w-100" onclick="crearUser()">CREAR</button>
+                    <div class="col-md-4">
+                        <div class="glass-panel sticky-top" style="top: 20px;">
+                            <h5 class="text-neon mb-4">NUEVO INTEGRANTE</h5>
+                            <input id="u-nom" class="input-neon mb-3" placeholder="Nombre">
+                            <input id="u-pass" class="input-neon mb-3" type="password" placeholder="Contraseña">
+                            <label class="text-secondary small mb-1">Rol / Cargo</label>
+                            <select id="u-rol" class="input-neon mb-4">
+                                <option value="trabajador">Trabajador</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                            <button class="btn-neon w-100" onclick="crearUser()">AGREGAR</button>
                         </div>
                     </div>
-                    <div class="col-md-7"><div class="glass-panel"><div id="users-list"></div></div></div>
+                    <div class="col-md-8">
+                        <div class="glass-panel">
+                            <h5 class="text-white mb-3">Lista de Usuarios</h5>
+                            <div id="users-list" class="d-flex flex-column gap-3"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -303,7 +315,7 @@
     </div>
 
 <script>
-    // --- ⚠️ URL DEL SCRIPT DE GOOGLE (ASEGURATE QUE ES LA VERSIÓN "EXEC" ACTUAL) ---
+    // --- ⚠️ URL DEL SCRIPT DE GOOGLE ---
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziis4eKt8Ocj7iNq1injeiOVqds1JNHnwZLcHvFx2c48bTj2wiiBbAZP9xhZ56fT6G/exec"; 
     
     const firebaseConfig = { apiKey: "AIzaSyBzUErnjQEGE9-neDh5z6VJ_xNaHRmAkew", authDomain: "garaje89-inventario.firebaseapp.com", projectId: "garaje89-inventario", storageBucket: "garaje89-inventario.firebasestorage.app", messagingSenderId: "538336429741", appId: "1:538336429741:web:0f7ce96f624f3568a8e824" };
@@ -578,11 +590,75 @@
         if(confirm("¿Traer datos del Excel?")) verificarConflictosAlInicio(); 
     }
     
+    // --- GESTIÓN DE USUARIOS (MEJORADO) ---
     function crearUser() {
-        const id=document.getElementById('u-id').value, p=document.getElementById('u-pass').value;
-        if(id&&p) db.collection("usuarios").doc(id).set({nombre:document.getElementById('u-nom').value, contraseña:p, permisos:{rol:document.getElementById('u-rol').value}}).then(()=>showToast("Usuario creado"));
+        const nom = document.getElementById('u-nom').value;
+        const pass = document.getElementById('u-pass').value;
+        const rol = document.getElementById('u-rol').value;
+
+        if(!nom || !pass) return showToast("Faltan datos", "error");
+
+        db.collection("usuarios").add({
+            nombre: nom,
+            contraseña: pass,
+            permisos: { rol: rol },
+            fecha: new Date()
+        }).then(() => {
+            showToast("Usuario creado");
+            document.getElementById('u-nom').value = '';
+            document.getElementById('u-pass').value = '';
+        }).catch(e => showToast("Error: " + e.message, "error"));
     }
-    db.collection("usuarios").onSnapshot(s => { document.getElementById('users-list').innerHTML = s.docs.map(d=>`<div class="user-card"><b>${d.data().nombre}</b> <small>${d.data().permisos.rol}</small></div>`).join(''); });
+
+    // LISTENER USUARIOS CON TARJETAS Y CAMBIO DE ROL
+    db.collection("usuarios").orderBy("nombre").onSnapshot(s => {
+        const list = document.getElementById('users-list');
+        list.innerHTML = '';
+        s.forEach(doc => {
+            const u = doc.data();
+            const isAdmin = usuarioActual && usuarioActual.permisos.rol === 'admin';
+            const isMe = usuarioActual && usuarioActual.id === doc.id;
+
+            let actionBtn = '';
+            // Solo admin ve botones de editar (y no se edita a sí mismo)
+            if (isAdmin && !isMe) {
+                const nextRol = u.permisos.rol === 'admin' ? 'trabajador' : 'admin';
+                const btnColor = u.permisos.rol === 'admin' ? 'btn-outline-warning' : 'btn-outline-success';
+                const btnIcon = u.permisos.rol === 'admin' ? 'bi-arrow-down' : 'bi-arrow-up';
+                actionBtn = `
+                    <button class="btn btn-sm ${btnColor}" onclick="cambiarRol('${doc.id}', '${nextRol}')" title="Cambiar Rol"><i class="bi ${btnIcon}"></i></button>
+                    <button class="btn btn-sm btn-outline-danger ms-2" onclick="borrarUsuario('${doc.id}')"><i class="bi bi-trash"></i></button>
+                `;
+            }
+
+            list.innerHTML += `
+                <div class="user-card d-flex align-items-center justify-content-between p-3" style="border-left: 4px solid ${u.permisos.rol === 'admin' ? '#39ff14' : '#666'};">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-white" style="width:40px; height:40px; font-weight:bold; font-size:1.2rem;">
+                            ${u.nombre.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                            <h5 class="m-0 text-white">${u.nombre}</h5>
+                            <small class="text-secondary" style="text-transform: uppercase; font-size: 0.75rem;">${u.permisos.rol}</small>
+                        </div>
+                    </div>
+                    <div>${actionBtn}</div>
+                </div>
+            `;
+        });
+    });
+
+    function cambiarRol(id, nRol) {
+        if(confirm(`¿Cambiar rol a ${nRol.toUpperCase()}?`)) {
+            db.collection("usuarios").doc(id).update({ "permisos.rol": nRol });
+        }
+    }
+
+    function borrarUsuario(id) {
+         if(confirm("¿Eliminar usuario permanentemente?")) {
+            db.collection("usuarios").doc(id).delete();
+        }
+    }
 
     function filtrarInv() {
         const t = document.getElementById('search-inv').value.toLowerCase(), p = document.getElementById('filtro-prov').value;
