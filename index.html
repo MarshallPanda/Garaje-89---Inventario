@@ -3,80 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Garaje '89 Pro</title>
+    <title>Garaje '89 | Pro System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        :root { --neon: #39ff14; --dark: #050505; --panel: rgba(30, 30, 30, 0.6); --border: rgba(57, 255, 20, 0.2); }
-        body { background-color: var(--dark); color: #e0e0e0; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; margin:0; background-image: radial-gradient(circle at 50% 50%, #111 0%, #000 100%); }
+        :root { --neon: #39ff14; --dark: #050505; --panel: rgba(20, 20, 20, 0.7); --border: rgba(57, 255, 20, 0.3); }
         
-        /* ESTILOS GLOBALES */
+        body { 
+            background-color: var(--dark); color: #e0e0e0; font-family: 'Segoe UI', sans-serif; 
+            overflow-x: hidden; margin:0; 
+            background-image: radial-gradient(circle at 10% 20%, rgba(57, 255, 20, 0.05) 0%, transparent 20%);
+        }
+        
         .oculto { display: none !important; }
-        .text-neon { color: var(--neon) !important; text-shadow: 0 0 5px rgba(57,255,20,0.5); }
-        .glass-panel { background: var(--panel); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 20px; }
+        .text-neon { color: var(--neon) !important; text-shadow: 0 0 10px rgba(57,255,20,0.4); }
         
+        /* EFECTO CRISTAL (GLASSMORPHISM) */
+        .glass-panel { 
+            background: var(--panel); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 15px; padding: 25px; 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); margin-bottom: 20px; transition: 0.3s;
+        }
+        .glass-panel:hover { border-color: var(--border); }
+
         /* INPUTS & BOTONES */
-        .input-neon { background: rgba(0,0,0,0.5); border: 1px solid #444; color: white; padding: 10px; border-radius: 6px; width: 100%; transition: 0.3s; }
-        .input-neon:focus { outline: none; border-color: var(--neon); box-shadow: 0 0 8px rgba(57,255,20,0.3); }
+        .input-neon { 
+            background: rgba(0,0,0,0.4); border: 1px solid #444; color: white; padding: 10px 15px; 
+            width: 100%; border-radius: 8px; outline: none; transition: 0.3s;
+        }
+        .input-neon:focus { border-color: var(--neon); box-shadow: 0 0 8px rgba(57,255,20,0.2); }
         
-        .btn-neon { background: var(--neon); color: black; font-weight: 800; border: none; padding: 10px 20px; border-radius: 6px; width: 100%; text-transform: uppercase; transition: 0.3s; cursor: pointer; }
-        .btn-neon:hover { background: #32d911; box-shadow: 0 0 15px var(--neon); transform: scale(1.02); }
+        .btn-neon { 
+            background: var(--neon); color: black; font-weight: 800; border: none; padding: 10px 20px; 
+            border-radius: 8px; width: 100%; text-transform: uppercase; cursor: pointer; transition: 0.3s; 
+            box-shadow: 0 0 10px rgba(57,255,20,0.2);
+        }
+        .btn-neon:hover { transform: translateY(-2px); box-shadow: 0 0 20px var(--neon); }
         
-        .btn-outline { background: transparent; border: 1px solid var(--neon); color: var(--neon); padding: 8px 15px; border-radius: 6px; transition: 0.3s; cursor: pointer; }
+        .btn-outline { 
+            background: transparent; border: 1px solid var(--neon); color: var(--neon); 
+            padding: 8px 15px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold;
+        }
         .btn-outline:hover { background: var(--neon); color: black; }
 
         /* SIDEBAR */
-        .sidebar { position: fixed; height: 100vh; width: 260px; background: rgba(10,10,10,0.95); border-right: 1px solid var(--border); padding-top: 30px; z-index: 1000; }
+        .sidebar { position: fixed; height: 100vh; width: 260px; background: rgba(5,5,5,0.95); border-right: 1px solid #222; padding-top: 30px; z-index: 1000; }
         .brand { font-size: 2rem; font-weight: 900; text-align: center; margin-bottom: 40px; letter-spacing: 3px; font-style: italic; }
         .nav-item { padding: 15px 25px; color: #888; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.2s; font-size: 1.1rem; }
-        .nav-item:hover, .nav-item.active { color: var(--neon); background: rgba(57,255,20,0.05); border-left: 4px solid var(--neon); }
-        
+        .nav-item:hover, .nav-item.active { color: var(--neon); background: linear-gradient(90deg, rgba(57,255,20,0.1) 0%, transparent 100%); border-left: 4px solid var(--neon); }
         .main-content { margin-left: 260px; padding: 40px; }
+
+        /* MODAL FLOTANTE PEQUEÑO Y ELEGANTE */
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 5000; 
+            display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .modal-box { 
+            background: #111; width: 400px; padding: 30px; border-radius: 16px; 
+            border: 1px solid var(--border); box-shadow: 0 0 50px rgba(57,255,20,0.15); 
+            transform: scale(0.8); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal-overlay.active .modal-box { transform: scale(1); }
 
         /* TABLAS */
         .table-custom { width: 100%; border-collapse: collapse; color: #ccc; }
-        .table-custom th { text-align: left; padding: 15px; color: var(--neon); border-bottom: 1px solid #444; }
-        .table-custom td { padding: 15px; border-bottom: 1px solid #222; }
-        .table-custom tr:hover { background: rgba(255,255,255,0.03); }
-
-        /* LOGIN */
-        .login-overlay { position: fixed; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .login-box { background: rgba(20,20,20,0.95); width: 350px; padding: 40px; border-radius: 15px; border: 1px solid var(--border); text-align: center; box-shadow: 0 0 50px rgba(57,255,20,0.1); }
+        .table-custom th { text-align: left; padding: 15px; color: var(--neon); border-bottom: 1px solid #444; font-size: 0.9rem; text-transform: uppercase; }
+        .table-custom td { padding: 15px; border-bottom: 1px solid #222; font-size: 0.95rem; }
         
-        /* MODAL FLOTANTE PEQUEÑO */
-        .modal-overlay { position: fixed; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 5000; display: flex; justify-content: center; align-items: center; }
-        .modal-box { background: #151515; width: 400px; padding: 25px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.8); animation: popIn 0.3s ease; }
-        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        /* LOADER DISCRETO */
-        .loader-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--neon); z-index: 99999; width: 0%; transition: width 0.3s; box-shadow: 0 0 10px var(--neon); }
-
-        /* USUARIOS LISTA */
-        .user-card { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; margin-bottom: 10px; border-radius: 6px; }
+        /* User Card */
+        .user-card { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 8px; border-left: 3px solid transparent; }
+        .user-card:hover { background: rgba(255,255,255,0.06); border-left-color: var(--neon); }
 
         @media print { .sidebar, .no-print { display: none; } .main-content { margin: 0; padding: 0; } body { background: white; color: black; } }
     </style>
 </head>
 <body>
 
-    <div id="loader-bar" class="loader-bar"></div>
-
-    <div id="login-overlay" class="login-overlay">
-        <div class="login-box">
-            <h1 class="brand text-neon">GARAJE '89</h1>
-            <p class="text-secondary mb-4">Selecciona tu usuario</p>
-            <select id="login-user" class="input-neon mb-3" style="text-align: center; font-size: 1.1rem;"></select>
-            <input type="password" id="login-pass" class="input-neon mb-4" placeholder="•••••••" style="text-align: center;">
-            <button onclick="login()" class="btn-neon">ENTRAR</button>
+    <div id="login-overlay" class="modal-overlay active" style="z-index: 9999;">
+        <div class="modal-box text-center">
+            <h1 class="brand text-neon mb-0">GARAJE '89</h1>
+            <p class="text-secondary small mb-4">SISTEMA DE GESTIÓN</p>
+            
+            <div class="text-start mb-3">
+                <label class="text-secondary small ms-1">Usuario</label>
+                <select id="login-user" class="input-neon">
+                    <option>Cargando...</option>
+                </select>
+            </div>
+            
+            <div class="text-start mb-4">
+                <label class="text-secondary small ms-1">Contraseña</label>
+                <input type="password" id="login-pass" class="input-neon" placeholder="•••••••">
+            </div>
+            
+            <button onclick="login()" class="btn-neon">INGRESAR</button>
         </div>
     </div>
 
     <div id="app-container" class="oculto">
+        
         <div class="sidebar no-print">
             <div class="brand text-neon">GARAJE '89</div>
             <div class="nav-item active" onclick="nav('pos', this)"><i class="bi bi-cart2"></i> Vender</div>
@@ -84,66 +118,77 @@
             <div class="nav-item" onclick="nav('inv', this)"><i class="bi bi-boxes"></i> Inventario</div>
             
             <div class="admin-only">
-                <hr style="border-color:#333; margin:20px">
+                <hr style="border-color:#333; margin:20px 25px; opacity:0.5">
                 <div class="nav-item" onclick="nav('dash', this)"><i class="bi bi-bar-chart-fill"></i> Dashboard</div>
                 <div class="nav-item" onclick="nav('ventas', this)"><i class="bi bi-receipt-cutoff"></i> Historial</div>
                 <div class="nav-item" onclick="nav('users', this)"><i class="bi bi-people-fill"></i> Usuarios</div>
             </div>
             
             <div style="position: absolute; bottom: 30px; width: 100%; text-align: center;">
-                <span id="user-display" class="text-neon fw-bold"></span><br>
-                <a href="#" onclick="location.reload()" style="color:#666; font-size:0.8rem; text-decoration:none;">Cerrar Sesión</a>
+                <div class="mb-2"><i class="bi bi-person-circle text-secondary" style="font-size: 1.5rem;"></i></div>
+                <span id="user-display" class="text-white fw-bold"></span><br>
+                <button onclick="location.reload()" class="btn btn-sm text-secondary mt-1 hover-danger">Salir</button>
             </div>
         </div>
 
         <div class="main-content">
             
             <div id="sec-pos" class="view-section">
-                <h3 class="mb-4 text-white"><i class="bi bi-cart2 text-neon"></i> PUNTO DE VENTA</h3>
-                <div class="glass-panel">
-                    <input id="scanner" class="input-neon" style="font-size:1.5rem; letter-spacing:2px" placeholder="🔫 Escanear código..." autofocus>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="text-white m-0"><i class="bi bi-cart2 text-neon me-2"></i> PUNTO DE VENTA</h3>
+                    <div class="text-secondary small" id="date-display"></div>
                 </div>
-                <div class="glass-panel">
+
+                <div class="glass-panel p-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark border-secondary text-neon"><i class="bi bi-upc-scan"></i></span>
+                        <input id="scanner" class="form-control bg-dark text-white border-secondary" style="font-size: 1.2rem;" placeholder="Escanear producto..." autofocus>
+                    </div>
+                </div>
+
+                <div class="glass-panel" style="min-height: 400px;">
                     <table class="table-custom">
                         <thead><th>Producto</th><th>Cant</th><th>Precio</th><th>Total</th><th></th></thead>
                         <tbody id="cart-body"></tbody>
                     </table>
-                    <div class="d-flex justify-content-between align-items-end mt-4 pt-3 border-top border-secondary">
-                        <div class="text-start">
-                            <button onclick="finalizar('cotizar')" class="btn-outline me-2"><i class="bi bi-file-earmark-pdf"></i> COTIZAR</button>
-                        </div>
+                    
+                    <div class="d-flex justify-content-between align-items-end mt-5 pt-4 border-top border-secondary">
+                        <button onclick="finalizar('cotizar')" class="btn-outline px-4"><i class="bi bi-file-earmark-pdf"></i> COTIZAR</button>
                         <div class="text-end">
-                            <h5 class="text-secondary">Total a Pagar</h5>
-                            <h1 class="text-neon display-4 fw-bold">S/ <span id="total-lbl">0.00</span></h1>
-                            <button onclick="finalizar('venta')" class="btn-neon mt-2 px-5">VENDER</button>
+                            <h6 class="text-secondary mb-0">TOTAL A PAGAR</h6>
+                            <h1 class="text-neon display-4 fw-bold m-0">S/ <span id="total-lbl">0.00</span></h1>
+                            <button onclick="finalizar('venta')" class="btn-neon mt-3 px-5 py-3"><i class="bi bi-check-lg me-2"></i> COBRAR</button>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div id="sec-entrada" class="view-section oculto">
-                <h3 class="mb-4 text-white">ENTRADAS RÁPIDAS</h3>
-                <div class="glass-panel text-center py-5">
-                    <div style="font-size:4rem; color:var(--neon); margin-bottom:20px"><i class="bi bi-box-seam-fill"></i></div>
-                    <h5>Escanea para sumar <span class="text-neon">+1</span> al stock</h5>
-                    <input id="scanner-entrada" class="input-neon mx-auto mt-4" style="max-width:400px; text-align:center; font-size:1.2rem" placeholder="Esperando código...">
-                    <p id="msg-entrada" class="mt-3 text-secondary">Listo.</p>
+                <h3 class="text-white mb-4">ENTRADAS DE STOCK</h3>
+                <div class="glass-panel text-center py-5 d-flex flex-column align-items-center justify-content-center" style="height: 60vh;">
+                    <div style="font-size: 5rem; color: var(--neon); opacity: 0.8; animation: pulse 2s infinite;"><i class="bi bi-box-seam"></i></div>
+                    <h4 class="mt-4 mb-4 fw-light">Escanea un producto para sumar <b class="text-neon">+1</b></h4>
+                    <input id="scanner-entrada" class="input-neon text-center" style="max-width: 400px; font-size: 1.5rem;" placeholder="Esperando código...">
+                    <div id="msg-entrada" class="mt-4 text-secondary" style="height: 30px;">Listo para escanear...</div>
                 </div>
             </div>
 
             <div id="sec-inv" class="view-section oculto">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="text-white">INVENTARIO</h3>
-                    <button class="btn-neon" style="width:auto" onclick="modalNuevo('')"><i class="bi bi-plus-lg"></i> Nuevo</button>
+                    <h3 class="text-white m-0">INVENTARIO</h3>
+                    <button class="btn-neon" style="width: auto;" onclick="modalNuevo('')"><i class="bi bi-plus-lg me-2"></i> NUEVO</button>
                 </div>
+                
                 <div class="glass-panel">
-                    <div class="d-flex gap-2 mb-3">
-                        <select id="filtro-prov" class="input-neon" onchange="filtrarInv()"></select>
-                        <button class="btn-outline" onclick="cargarInv()"><i class="bi bi-arrow-clockwise"></i></button>
+                    <div class="d-flex gap-3 mb-4">
+                        <input id="search-inv" class="input-neon" placeholder="🔍 Buscar por nombre o código..." onkeyup="filtrarInv()">
+                        <select id="filtro-prov" class="input-neon w-25" onchange="filtrarInv()"><option value="TODOS">Todos los proveedores</option></select>
                     </div>
-                    <div style="max-height: 65vh; overflow-y: auto;">
+                    <div style="max-height: 60vh; overflow-y: auto;">
                         <table class="table-custom">
-                            <thead><th>Cod</th><th>Nombre</th><th>Prov</th><th>Stock</th><th>Precio</th></thead>
+                            <thead style="position: sticky; top: 0; background: #151515;">
+                                <th>Código</th><th>Producto</th><th>Proveedor</th><th>Stock</th><th>Precio</th>
+                            </thead>
                             <tbody id="inv-body"></tbody>
                         </table>
                     </div>
@@ -151,47 +196,79 @@
             </div>
 
             <div id="sec-dash" class="view-section oculto">
-                <h3 class="mb-4 text-white">ESTADÍSTICAS</h3>
+                <h3 class="text-white mb-4">ESTADÍSTICAS</h3>
+                
                 <div class="row g-4 mb-4">
-                    <div class="col-md-6"><div class="glass-panel">
-                        <h6 class="text-secondary">Ventas Totales</h6>
-                        <h2 class="text-neon">S/ <span id="d-hist">0.00</span></h2>
-                    </div></div>
-                    <div class="col-md-6"><div class="glass-panel">
-                        <h6 class="text-secondary">Vendido Hoy</h6>
-                        <h2 class="text-white">S/ <span id="d-hoy">0.00</span></h2>
-                    </div></div>
+                    <div class="col-md-4">
+                        <div class="glass-panel p-3 d-flex align-items-center gap-3">
+                            <div class="bg-dark p-3 rounded text-neon fs-3"><i class="bi bi-cash-stack"></i></div>
+                            <div><h6 class="text-secondary m-0">Ventas Totales</h6><h3 class="text-white m-0">S/ <span id="d-hist">0.00</span></h3></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="glass-panel p-3 d-flex align-items-center gap-3">
+                            <div class="bg-dark p-3 rounded text-warning fs-3"><i class="bi bi-calendar-check"></i></div>
+                            <div><h6 class="text-secondary m-0">Ventas Hoy</h6><h3 class="text-white m-0">S/ <span id="d-hoy">0.00</span></h3></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="glass-panel p-3 d-flex align-items-center gap-3">
+                            <div class="bg-dark p-3 rounded text-info fs-3"><i class="bi bi-box"></i></div>
+                            <div><h6 class="text-secondary m-0">Productos Hoy</h6><h3 class="text-white m-0" id="d-count">0</h3></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="glass-panel">
-                    <h5 class="mb-4">Top 5 Productos Vendidos</h5>
-                    <canvas id="chartProds" style="max-height: 300px;"></canvas>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="glass-panel">
+                            <h5 class="mb-4 text-neon">Top Productos Vendidos</h5>
+                            <canvas id="chartProds" style="height: 300px; width: 100%;"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="glass-panel h-100">
+                            <h5 class="mb-3 text-secondary">Avisos</h5>
+                            <div class="alert alert-dark border-secondary text-white small"><i class="bi bi-info-circle text-neon"></i> Stock bajo en Aceites</div>
+                            <div class="alert alert-dark border-secondary text-white small"><i class="bi bi-check-circle text-neon"></i> Sistema Sincronizado</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div id="sec-ventas" class="view-section oculto">
-                <h3 class="mb-4 text-white">HISTORIAL VENTAS</h3>
-                <button class="btn-outline mb-3" onclick="cargarVentas()">Actualizar</button>
-                <div class="glass-panel">
-                    <table class="table-custom"><thead><th>Fecha</th><th>Vend</th><th>Prod</th><th>Total (Edit)</th><th></th></thead><tbody id="ventas-body"></tbody></table>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="text-white m-0">HISTORIAL</h3>
+                    <button class="btn-outline w-auto py-1" onclick="cargarVentas()"><i class="bi bi-arrow-clockwise"></i></button>
+                </div>
+                <div class="glass-panel" style="max-height: 75vh; overflow-y: auto;">
+                    <table class="table-custom">
+                        <thead><th>Fecha</th><th>Vendedor</th><th>Producto</th><th>Total (Edit)</th><th></th></thead>
+                        <tbody id="ventas-body"></tbody>
+                    </table>
                 </div>
             </div>
 
             <div id="sec-users" class="view-section oculto">
-                <div class="row">
-                    <div class="col-md-5">
-                        <div class="glass-panel">
-                            <h5 class="text-neon mb-3">Crear Usuario</h5>
-                            <input id="u-id" class="input-neon mb-2" placeholder="ID (ej: juan)">
-                            <input id="u-nom" class="input-neon mb-2" placeholder="Nombre Completo">
-                            <input id="u-pass" class="input-neon mb-2" type="password" placeholder="Contraseña">
-                            <select id="u-rol" class="input-neon mb-3"><option value="trabajador">Trabajador</option><option value="admin">Administrador</option></select>
+                <h3 class="text-white mb-4">EQUIPO DE TRABAJO</h3>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="glass-panel sticky-top" style="top: 20px;">
+                            <h5 class="text-neon mb-4"><i class="bi bi-person-plus-fill"></i> Crear Usuario</h5>
+                            <input id="u-id" class="input-neon mb-3" placeholder="ID Usuario (ej: juan)">
+                            <input id="u-nom" class="input-neon mb-3" placeholder="Nombre Completo">
+                            <input id="u-pass" class="input-neon mb-3" type="password" placeholder="Contraseña">
+                            <select id="u-rol" class="input-neon mb-4">
+                                <option value="trabajador">Trabajador</option>
+                                <option value="admin">Administrador</option>
+                            </select>
                             <button class="btn-neon" onclick="crearUser()">GUARDAR</button>
                         </div>
                     </div>
-                    <div class="col-md-7">
+                    <div class="col-md-8">
                         <div class="glass-panel">
-                            <h5 class="mb-3">Usuarios Existentes</h5>
-                            <div id="users-list" style="max-height: 400px; overflow-y: auto;"></div>
+                            <h5 class="mb-4">Lista de Usuarios</h5>
+                            <div id="users-list"></div>
                         </div>
                     </div>
                 </div>
@@ -200,30 +277,42 @@
         </div>
     </div>
 
-    <div id="modal-overlay" class="modal-overlay oculto">
+    <div id="modal-overlay" class="modal-overlay">
         <div class="modal-box">
-            <h5 class="text-neon text-center mb-3">NUEVO PRODUCTO</h5>
-            <input id="n-codigo" class="input-neon mb-2" readonly style="opacity:0.7">
-            <input id="n-nombre" class="input-neon mb-2" placeholder="Nombre del Producto">
-            <select id="n-prov" class="input-neon mb-2" onchange="checkOtro(this)"></select>
-            <input id="n-prov-txt" class="input-neon mb-2 oculto" placeholder="Nuevo Proveedor">
-            <div class="d-flex gap-2 mb-2">
-                <input id="n-costo" type="number" class="input-neon" placeholder="Costo">
-                <input id="n-precio" type="number" class="input-neon" placeholder="Precio">
+            <h5 class="text-neon text-center mb-4"><i class="bi bi-box-seam"></i> NUEVO PRODUCTO</h5>
+            
+            <div class="mb-3">
+                <label class="text-secondary small ms-1">Código</label>
+                <input id="n-codigo" class="input-neon" readonly style="background: #222; color: #666;">
             </div>
-            <input id="n-stock" type="number" class="input-neon mb-3" value="1" placeholder="Stock">
+            
+            <div class="mb-3">
+                <input id="n-nombre" class="input-neon" placeholder="Nombre del Producto">
+            </div>
+            
+            <div class="mb-3">
+                <input id="n-prov" class="input-neon" placeholder="Proveedor" list="lista-provs">
+                <datalist id="lista-provs"></datalist>
+            </div>
+            
+            <div class="d-flex gap-2 mb-3">
+                <input id="n-costo" type="number" class="input-neon" placeholder="Costo">
+                <input id="n-precio" type="number" class="input-neon" placeholder="Precio Venta">
+            </div>
+            
+            <div class="mb-4">
+                <input id="n-stock" type="number" class="input-neon" value="1" placeholder="Stock Inicial">
+            </div>
+            
             <div class="d-flex gap-2">
-                <button class="btn-outline" onclick="cerrarModal()">CANCELAR</button>
+                <button class="btn-outline" onclick="closeModal()">CANCELAR</button>
                 <button class="btn-neon" onclick="guardarNuevo()">GUARDAR</button>
             </div>
         </div>
     </div>
 
 <script>
-    // --- ⚠️⚠️ PEGA TU URL DE APPS SCRIPT AQUÍ ⚠️⚠️ ---
-    const API_URL = "https://script.google.com/macros/s/AKfycbyxBQpIK46_VtCiXmtOwsnQvhGM_OIy2k0lM5_KfROrzjJIMHhPSeDq_ZZiHQXJsCY/exec";
-
-    // --- CONFIG FIREBASE ---
+    // --- ⚠️⚠️ CONFIGURACIÓN FIREBASE (PEGA TUS DATOS REALES) ⚠️⚠️ ---
     const firebaseConfig = {
         apiKey: "AIzaSyBzUErnjQEGE9-neDh5z6VJ_xNaHRmAkew",
         authDomain: "garaje89-inventario.firebaseapp.com",
@@ -232,52 +321,158 @@
         messagingSenderId: "538336429741",
         appId: "1:538336429741:web:0f7ce96f624f3568a8e824"
     };
+    
+    // INICIALIZACIÓN
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    let usuarioActual = null;
+    let carrito = [];
+    let inventario = []; // Cache local para velocidad máxima
 
-    let usuarioActual = null, carrito = [], inventarioCache = [];
-
-    // LOADER
-    function loading(show) { document.getElementById('loader-bar').style.width = show ? '100%' : '0%'; setTimeout(()=>document.getElementById('loader-bar').style.width='0%', 500); }
-
-    async function callAPI(action, payload = {}) {
-        loading(true);
-        try {
-            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action, ...payload }) });
-            return await res.json();
-        } catch (e) { console.error(e); return null; }
-    }
-
-    // INICIO
-    window.onload = function() {
+    // --- MAGIA REAL-TIME (Sin spinners de carga) ---
+    
+    // 1. Escuchar Usuarios (Para el Login y Lista)
+    db.collection("usuarios").onSnapshot(snap => {
         const sel = document.getElementById('login-user');
-        db.collection("usuarios").get().then(s => {
-            sel.innerHTML = '<option value="">Selecciona tu usuario</option>';
-            s.forEach(d => {
-                let data = d.data();
-                let o = document.createElement('option');
-                o.value = d.id; o.innerText = data.nombre;
-                sel.appendChild(o);
-                // Listar en sección usuarios
-                document.getElementById('users-list').innerHTML += `<div class="user-card"><span>${data.nombre} <small class="text-secondary">(${data.permisos.rol})</small></span></div>`;
-            });
+        const list = document.getElementById('users-list');
+        sel.innerHTML = '<option value="">Selecciona tu usuario...</option>';
+        list.innerHTML = '';
+        
+        snap.forEach(doc => {
+            const u = doc.data();
+            // Dropdown login
+            const opt = document.createElement('option');
+            opt.value = doc.id; opt.innerText = u.nombre;
+            sel.appendChild(opt);
+            
+            // Lista bonita en sección usuarios
+            list.innerHTML += `
+                <div class="user-card">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-neon" style="width:40px; height:40px; font-weight:bold;">
+                            ${u.nombre.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                            <div class="fw-bold text-white">${u.nombre}</div>
+                            <div class="small text-secondary">${u.permisos.rol.toUpperCase()}</div>
+                        </div>
+                    </div>
+                    <i class="bi bi-three-dots-vertical text-secondary"></i>
+                </div>
+            `;
         });
-    };
+    });
+
+    // 2. Escuchar Inventario (Para búsquedas instantáneas)
+    db.collection("inventario").onSnapshot(snap => {
+        inventario = [];
+        const provs = new Set();
+        const dl = document.getElementById('lista-provs');
+        const filtro = document.getElementById('filtro-prov');
+        const tbody = document.getElementById('inv-body');
+        
+        dl.innerHTML = ''; 
+        tbody.innerHTML = ''; // Limpia tabla
+        filtro.innerHTML = '<option value="TODOS">Todos los proveedores</option>';
+
+        snap.forEach(doc => {
+            const p = doc.data();
+            p.id = doc.id; // Guardamos ID para editar luego si queremos
+            inventario.push(p);
+            provs.add(p.proveedor);
+            
+            // Dibujar tabla
+            tbody.innerHTML += `
+                <tr>
+                    <td class="text-secondary small">${p.codigo}</td>
+                    <td class="fw-bold text-white">${p.nombre}</td>
+                    <td><span class="badge bg-dark border border-secondary text-secondary">${p.proveedor}</span></td>
+                    <td>${p.stock > 0 ? p.stock : '<span class="text-danger">Agotado</span>'}</td>
+                    <td class="text-neon fw-bold">S/ ${p.precio}</td>
+                </tr>
+            `;
+        });
+
+        // Llenar listas de proveedores
+        provs.forEach(pr => {
+            dl.innerHTML += `<option value="${pr}">`;
+            filtro.innerHTML += `<option value="${pr}">${pr}</option>`;
+        });
+    });
+
+    // 3. Escuchar Ventas (Para Historial y Dashboard)
+    db.collection("ventas").orderBy("fecha", "desc").limit(50).onSnapshot(snap => {
+        const tbody = document.getElementById('ventas-body');
+        let totalHist = 0, totalHoy = 0, itemsHoy = 0;
+        const hoyStr = new Date().toDateString();
+        const prodCount = {}; // Para el gráfico
+
+        tbody.innerHTML = '';
+
+        snap.forEach(doc => {
+            const v = doc.data();
+            const fecha = v.fecha.toDate ? v.fecha.toDate() : new Date(v.fecha);
+            
+            // Tabla
+            tbody.innerHTML += `
+                <tr>
+                    <td class="small text-secondary">${fecha.toLocaleDateString()}</td>
+                    <td>${v.vendedor}</td>
+                    <td>${v.nombre} <small class="text-secondary">x${v.cantidad}</small></td>
+                    <td><input class="input-neon py-1 text-center" style="width:80px" value="${v.total}" onchange="updateVenta('${doc.id}', this.value)"></td>
+                    <td><button class="btn btn-sm btn-outline-danger border-0" onclick="deleteVenta('${doc.id}')"><i class="bi bi-trash"></i></button></td>
+                </tr>
+            `;
+
+            // Cálculos Dashboard
+            totalHist += Number(v.total);
+            if(fecha.toDateString() === hoyStr) {
+                totalHoy += Number(v.total);
+                itemsHoy += v.cantidad;
+            }
+            
+            // Datos Gráfico
+            if(v.nombre) prodCount[v.nombre] = (prodCount[v.nombre] || 0) + v.cantidad;
+        });
+
+        // Actualizar Widgets
+        document.getElementById('d-hist').innerText = totalHist.toFixed(2);
+        document.getElementById('d-hoy').innerText = totalHoy.toFixed(2);
+        document.getElementById('d-count').innerText = itemsHoy;
+        
+        // Actualizar Gráfico
+        updateChart(prodCount);
+    });
+
+    // --- FUNCIONES DEL SISTEMA ---
 
     function login() {
-        let u = document.getElementById('login-user').value;
-        let p = document.getElementById('login-pass').value;
+        const u = document.getElementById('login-user').value;
+        const p = document.getElementById('login-pass').value;
         if(!u || !p) return;
-        
+
         db.collection("usuarios").doc(u).get().then(doc => {
             if(doc.exists && doc.data().contraseña === p) {
-                usuarioActual = doc.data(); usuarioActual.id = doc.id;
-                document.getElementById('login-overlay').classList.add('oculto');
+                usuarioActual = doc.data();
+                usuarioActual.id = doc.id;
+                
+                // Transición suave
+                document.getElementById('login-overlay').classList.remove('active');
                 document.getElementById('app-container').classList.remove('oculto');
+                
+                // Setear datos UI
                 document.getElementById('user-display').innerText = usuarioActual.nombre;
-                if(usuarioActual.permisos.rol !== 'admin') document.querySelectorAll('.admin-only').forEach(e => e.classList.add('oculto'));
-                cargarProvModal();
-            } else { alert("Contraseña incorrecta"); }
+                document.getElementById('date-display').innerText = new Date().toLocaleDateString();
+                
+                // Permisos
+                if(usuarioActual.permisos.rol !== 'admin') {
+                    document.querySelectorAll('.admin-only').forEach(e => e.classList.add('oculto'));
+                }
+                
+                document.getElementById('scanner').focus();
+            } else {
+                alert("Contraseña incorrecta");
+            }
         });
     }
 
@@ -286,122 +481,228 @@
         document.getElementById('sec-'+id).classList.remove('oculto');
         document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
         el.classList.add('active');
-        if(id==='pos') document.getElementById('scanner').focus();
-        if(id==='entrada') document.getElementById('scanner-entrada').focus();
-        if(id==='inv') cargarInv();
-        if(id==='ventas') cargarVentas();
-        if(id==='dash') cargarDash();
-    }
-
-    // POS
-    document.getElementById('scanner').addEventListener('keypress', async function(e){
-        if(e.key==='Enter'){
-            let c = this.value; this.value='';
-            const r = await callAPI('escanear', { codigo: c });
-            if(r && r.status==='encontrado') addCar(r.producto);
-            else if(confirm("⚠️ Producto nuevo. ¿Registrar?")) modalNuevo(c);
-        }
-    });
-
-    function addCar(p){
-        let ex = carrito.find(x=>x.codigo===p.codigo);
-        if(ex) ex.cantidad++; else carrito.push({...p, cantidad:1, precio:Number(p.precio)});
-        renderCar();
-    }
-    function renderCar(){
-        let h='', t=0;
-        carrito.forEach((p,i)=>{
-            t+=p.cantidad*p.precio;
-            h+=`<tr><td>${p.nombre}</td><td>${p.cantidad}</td><td>S/ ${p.precio}</td><td>S/ ${(p.cantidad*p.precio).toFixed(2)}</td><td><button class="btn-outline" style="border-color:red; color:red; padding:2px 8px" onclick="del(${i})"><i class="bi bi-trash"></i></button></td></tr>`;
-        });
-        document.getElementById('cart-body').innerHTML=h;
-        document.getElementById('total-lbl').innerText=t.toFixed(2);
-    }
-    function del(i){ carrito.splice(i,1); renderCar(); }
-    async function finalizar(t){
-        if(carrito.length===0) return;
-        if(t==='venta'){
-            if(!confirm("¿Procesar venta?")) return;
-            await callAPI('venta', {vendedor:usuarioActual.nombre, items:carrito});
-            alert("Venta Exitosa");
-        }
-        window.print(); carrito=[]; renderCar();
-    }
-
-    // ENTRADAS
-    document.getElementById('scanner-entrada').addEventListener('keypress', async function(e){
-        if(e.key==='Enter'){
-            let c = this.value; this.value='';
-            document.getElementById('msg-entrada').innerText = "Procesando...";
-            const r = await callAPI('entradaStock', {codigo:c});
-            if(r.status==='actualizado'){
-                document.getElementById('msg-entrada').innerText = `✅ Agregado: ${r.producto.nombre} (Stock: ${r.producto.nuevo_stock})`;
-                document.getElementById('msg-entrada').className = "mt-3 text-neon";
-            } else modalNuevo(c);
-        }
-    });
-
-    // INVENTARIO & MODAL
-    async function cargarInv(){ const d = await callAPI('leerInventario'); if(d) { inventarioCache=d; filtrarInv(); cargarProvModal(); } }
-    function filtrarInv(){
-        let f = document.getElementById('filtro-prov').value, h = '';
-        inventarioCache.forEach(r=>{ if(f==='TODOS' || r[2]===f) h+=`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[5]}</td><td>${r[4]}</td></tr>`; });
-        document.getElementById('inv-body').innerHTML=h;
-    }
-    function modalNuevo(c){ document.getElementById('modal-overlay').classList.remove('oculto'); document.getElementById('n-codigo').value=c||''; cargarProvModal(); }
-    function cerrarModal(){ document.getElementById('modal-overlay').classList.add('oculto'); }
-    async function cargarProvModal(){
-        const l = await callAPI('leerProveedores');
-        if(!l) return;
-        let s = document.getElementById('filtro-prov'); s.innerHTML='<option value="TODOS">Todos</option>';
-        let m = document.getElementById('n-prov'); m.innerHTML='<option value="">Seleccionar...</option><option value="OTRO">➕ Nuevo</option>';
-        l.forEach(p=>{ s.innerHTML+=`<option value="${p}">${p}</option>`; m.innerHTML+=`<option value="${p}">${p}</option>`; });
-    }
-    function checkOtro(s){ if(s.value==='OTRO') { document.getElementById('n-prov-txt').classList.remove('oculto'); document.getElementById('n-prov-txt').focus(); } else document.getElementById('n-prov-txt').classList.add('oculto'); }
-    async function guardarNuevo(){
-        let p = document.getElementById('n-prov').value; if(p==='OTRO') p = document.getElementById('n-prov-txt').value;
-        let f = { codigo:document.getElementById('n-codigo').value, nombre:document.getElementById('n-nombre').value, proveedor:p, costo:document.getElementById('n-costo').value, precio:document.getElementById('n-precio').value, stock:document.getElementById('n-stock').value };
-        await callAPI('guardarProducto', {form:f});
-        cerrarModal(); cargarInv();
-    }
-
-    // ADMIN & DASH
-    async function cargarVentas(){
-        const d = await callAPI('leerVentas');
-        let h=''; d.forEach(r=>{ h+=`<tr><td>${new Date(r[1]).toLocaleDateString()}</td><td>${r[2]}</td><td>${r[4]}</td><td><input class="input-neon" style="width:70px; padding:2px" value="${r[7]}" onchange="editV('${r[0]}',this.value)"></td><td><button class="btn-outline" style="border-color:red; color:red; padding:2px" onclick="delV('${r[0]}')">X</button></td></tr>`; });
-        document.getElementById('ventas-body').innerHTML=h;
-    }
-    async function editV(id,v){ await callAPI('editarVenta', {id, total:v}); }
-    async function delV(id){ if(confirm("¿Eliminar?")) { await callAPI('eliminarVenta', {id}); cargarVentas(); } }
-    
-    let myChart;
-    async function cargarDash(){
-        const d = await callAPI('dashboard');
-        document.getElementById('d-hist').innerText = d.totalHistorico.toFixed(2);
-        document.getElementById('d-hoy').innerText = d.totalHoy.toFixed(2);
         
-        // GRÁFICO
-        const ctx = document.getElementById('chartProds').getContext('2d');
+        if(id === 'pos') document.getElementById('scanner').focus();
+        if(id === 'entrada') document.getElementById('scanner-entrada').focus();
+    }
+
+    // --- LOGICA POS (VENTA) ---
+    const scanner = document.getElementById('scanner');
+    scanner.addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') {
+            const cod = scanner.value.trim();
+            scanner.value = '';
+            if(!cod) return;
+
+            const p = inventario.find(item => item.codigo === cod);
+            
+            if(p) {
+                // Producto existe -> Agregar al carrito
+                const existe = carrito.find(item => item.codigo === p.codigo);
+                if(existe) existe.cantidad++;
+                else carrito.push({ ...p, cantidad: 1, precio: Number(p.precio) });
+                renderCart();
+            } else {
+                // Producto nuevo -> Preguntar y abrir modal
+                if(confirm("⚠️ Producto no encontrado.\n¿Deseas registrarlo ahora?")) {
+                    openModal(cod);
+                }
+            }
+        }
+    });
+
+    function renderCart() {
+        const tbody = document.getElementById('cart-body');
+        tbody.innerHTML = '';
+        let total = 0;
+        
+        carrito.forEach((p, i) => {
+            total += p.cantidad * p.precio;
+            tbody.innerHTML += `
+                <tr>
+                    <td class="fw-bold text-white">${p.nombre}</td>
+                    <td>${p.cantidad}</td>
+                    <td>S/ ${p.precio}</td>
+                    <td class="text-neon">S/ ${(p.cantidad * p.precio).toFixed(2)}</td>
+                    <td><i class="bi bi-x-circle text-danger" style="cursor:pointer" onclick="delCart(${i})"></i></td>
+                </tr>
+            `;
+        });
+        document.getElementById('total-lbl').innerText = total.toFixed(2);
+    }
+
+    function delCart(i) { carrito.splice(i, 1); renderCart(); }
+
+    function finalizar(tipo) {
+        if(carrito.length === 0) return alert("Carrito vacío");
+        
+        if(tipo === 'cotizar') {
+            window.print();
+            return;
+        }
+
+        if(confirm("¿Confirmar Venta?")) {
+            const batch = db.batch(); // Para que sea atómico (todo o nada)
+            
+            carrito.forEach(item => {
+                // 1. Crear registro venta
+                const ventaRef = db.collection("ventas").doc();
+                batch.set(ventaRef, {
+                    fecha: new Date(),
+                    vendedor: usuarioActual.nombre,
+                    codigo: item.codigo,
+                    nombre: item.nombre,
+                    cantidad: item.cantidad,
+                    total: item.cantidad * item.precio
+                });
+
+                // 2. Descontar Stock (Buscando el doc correcto)
+                // Nota: Firestore requiere el ID del documento para actualizar.
+                // Como tenemos 'inventario' en cache local con ID, lo usamos.
+                const invItem = inventario.find(p => p.codigo === item.codigo);
+                if(invItem && invItem.id) {
+                    const invRef = db.collection("inventario").doc(invItem.id);
+                    const nuevoStock = Number(invItem.stock) - item.cantidad;
+                    batch.update(invRef, { stock: nuevoStock });
+                }
+            });
+
+            batch.commit().then(() => {
+                alert("✅ Venta Exitosa");
+                carrito = [];
+                renderCart();
+            }).catch(e => alert("Error: " + e));
+        }
+    }
+
+    // --- LOGICA ENTRADAS (SUMAR STOCK) ---
+    const scanEntrada = document.getElementById('scanner-entrada');
+    scanEntrada.addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') {
+            const cod = scanEntrada.value.trim();
+            scanEntrada.value = '';
+            const msg = document.getElementById('msg-entrada');
+            
+            const p = inventario.find(i => i.codigo === cod);
+            if(p) {
+                const nuevo = Number(p.stock) + 1;
+                db.collection("inventario").doc(p.id).update({ stock: nuevo });
+                msg.innerHTML = `<span class="text-neon fw-bold">✅ ${p.nombre} (+1)</span> Stock: ${nuevo}`;
+            } else {
+                msg.innerText = "Producto nuevo. Abriendo registro...";
+                openModal(cod);
+            }
+        }
+    });
+
+    // --- MODAL Y NUEVO PRODUCTO ---
+    function openModal(cod) {
+        document.getElementById('modal-overlay').classList.add('active');
+        document.getElementById('n-codigo').value = cod || '';
+        document.getElementById('n-nombre').focus();
+    }
+    function closeModal() { document.getElementById('modal-overlay').classList.remove('active'); }
+
+    function guardarNuevo() {
+        const cod = document.getElementById('n-codigo').value;
+        const nom = document.getElementById('n-nombre').value;
+        const prov = document.getElementById('n-prov').value;
+        const cos = document.getElementById('n-costo').value;
+        const pre = document.getElementById('n-precio').value;
+        const st = document.getElementById('n-stock').value;
+
+        if(!nom || !pre) return alert("Faltan datos");
+
+        db.collection("inventario").add({
+            codigo: cod, nombre: nom, proveedor: prov, costo: Number(cos), precio: Number(pre), stock: Number(st)
+        }).then(() => {
+            closeModal();
+            // Limpiar form
+            document.getElementById('n-nombre').value = '';
+            document.getElementById('n-costo').value = '';
+            document.getElementById('n-precio').value = '';
+            
+            // Si estábamos en entradas, devolver foco
+            if(!document.getElementById('sec-entrada').classList.contains('oculto')) {
+                document.getElementById('scanner-entrada').focus();
+                document.getElementById('msg-entrada').innerText = "Guardado. Siguiente...";
+            }
+        });
+    }
+
+    // --- ADMIN ---
+    function updateVenta(id, val) { db.collection("ventas").doc(id).update({ total: Number(val) }); }
+    function deleteVenta(id) { if(confirm("¿Eliminar?")) db.collection("ventas").doc(id).delete(); }
+    
+    function crearUser() {
+        const id = document.getElementById('u-id').value;
+        const nom = document.getElementById('u-nom').value;
+        const pass = document.getElementById('u-pass').value;
+        const rol = document.getElementById('u-rol').value;
+        
+        if(!id || !pass) return alert("Completa los datos");
+        
+        db.collection("usuarios").doc(id).set({
+            nombre: nom, contraseña: pass, permisos: { rol: rol }
+        }).then(() => {
+            alert("Usuario creado");
+            document.getElementById('u-id').value = '';
+            document.getElementById('u-pass').value = '';
+        });
+    }
+
+    // --- FILTRO INVENTARIO ---
+    function filtrarInv() {
+        const txt = document.getElementById('search-inv').value.toLowerCase();
+        const prov = document.getElementById('filtro-prov').value;
+        const rows = document.getElementById('inv-body').getElementsByTagName('tr');
+        
+        for(let r of rows) {
+            const tNom = r.cells[1].innerText.toLowerCase();
+            const tCod = r.cells[0].innerText.toLowerCase();
+            const tProv = r.cells[2].innerText; // Proveedor es exacto
+            
+            const matchTxt = tNom.includes(txt) || tCod.includes(txt);
+            const matchProv = prov === 'TODOS' || tProv === prov;
+            
+            r.style.display = (matchTxt && matchProv) ? '' : 'none';
+        }
+    }
+
+    // --- CHART.JS ---
+    let myChart;
+    function updateChart(data) {
+        const ctx = document.getElementById('chartProds');
+        if(!ctx) return;
+        
+        // Ordenar y tomar top 5
+        const labels = Object.keys(data).sort((a,b) => data[b] - data[a]).slice(0, 5);
+        const values = labels.map(k => data[k]);
+
         if(myChart) myChart.destroy();
+        
         myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: d.topProductos.map(p => p.name),
+                labels: labels,
                 datasets: [{
                     label: 'Unidades Vendidas',
-                    data: d.topProductos.map(p => p.count),
+                    data: values,
                     backgroundColor: 'rgba(57, 255, 20, 0.5)',
                     borderColor: '#39ff14',
-                    borderWidth: 1
+                    borderWidth: 1,
+                    borderRadius: 5
                 }]
             },
-            options: { scales: { y: { beginAtZero: true, grid: { color: '#333' } }, x: { grid: { color: '#333' } } }, plugins: { legend: { labels: { color: 'white' } } } }
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#333' }, ticks: { color: '#888' } },
+                    x: { grid: { display: false }, ticks: { color: '#fff' } }
+                }
+            }
         });
-    }
-
-    function crearUser(){
-        let i=document.getElementById('u-id').value; let n=document.getElementById('u-nom').value; let p=document.getElementById('u-pass').value; let r=document.getElementById('u-rol').value;
-        db.collection("usuarios").doc(i).set({nombre:n, contraseña:p, permisos:{rol:r}}).then(()=>{ alert("Usuario Creado"); location.reload(); });
     }
 </script>
 </body>
