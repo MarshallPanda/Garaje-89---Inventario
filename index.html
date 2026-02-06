@@ -24,10 +24,10 @@
             background-image: radial-gradient(circle at 10% 20%, rgba(57, 255, 20, 0.05) 0%, transparent 20%);
         }
 
-        /* --- SCROLLBAR INVISIBLE (MAGIA) --- */
+        /* --- SCROLL INVISIBLE --- */
         ::-webkit-scrollbar { display: none; }
         * { -ms-overflow-style: none; scrollbar-width: none; }
-        
+
         .oculto { display: none !important; }
         .text-neon { color: var(--neon) !important; text-shadow: 0 0 10px rgba(57,255,20,0.4); }
         
@@ -37,92 +37,69 @@
             border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 25px; 
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); margin-bottom: 20px; transition: 0.3s;
         }
-        .glass-panel:hover { border-color: var(--border); }
 
-        /* INPUTS Y BOTONES MEJORADOS */
+        /* INPUTS Y BOTONES */
         .input-neon { 
-            background: rgba(0,0,0,0.4); border: 1px solid #444; color: white; padding: 12px 15px; 
-            width: 100%; border-radius: 8px; outline: none; transition: 0.3s; font-size: 1rem;
+            background: rgba(0,0,0,0.4); border: 1px solid #444; color: white; padding: 10px 15px; 
+            width: 100%; border-radius: 6px; outline: none; transition: 0.3s;
         }
         .input-neon:focus { border-color: var(--neon); box-shadow: 0 0 8px rgba(57,255,20,0.2); }
         
         .btn-neon { 
             background: var(--neon); color: black; font-weight: 800; border: none; padding: 10px 20px; 
-            border-radius: 8px; width: 100%; text-transform: uppercase; cursor: pointer; transition: 0.3s; 
-            box-shadow: 0 0 10px rgba(57,255,20,0.2); letter-spacing: 1px; font-size: 0.9rem;
+            border-radius: 6px; width: 100%; text-transform: uppercase; cursor: pointer; transition: 0.3s; 
+            box-shadow: 0 0 10px rgba(57,255,20,0.2);
         }
-        .btn-neon:hover { transform: translateY(-2px); box-shadow: 0 0 25px var(--neon); }
+        .btn-neon:hover { transform: translateY(-2px); box-shadow: 0 0 20px var(--neon); }
         
+        /* ESTILOS BOTONES OUTLINE (COMO PEDISTE) */
         .btn-outline { 
             background: transparent; border: 1px solid var(--neon); color: var(--neon); 
-            padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; text-transform: uppercase;
+            padding: 8px 15px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: bold; text-transform: uppercase;
         }
-        .btn-outline:hover { background: var(--neon); color: black; box-shadow: 0 0 15px rgba(57,255,20,0.3); }
+        .btn-outline:hover { background: var(--neon); color: black; }
+
+        .btn-outline-success { border-color: #198754; color: #198754; background: transparent; font-weight: bold; }
+        .btn-outline-success:hover { background: #198754; color: white; }
+        
+        .btn-outline-warning { border-color: #ffc107; color: #ffc107; background: transparent; font-weight: bold; }
+        .btn-outline-warning:hover { background: #ffc107; color: black; }
 
         /* SIDEBAR */
         .sidebar { 
             position: fixed; height: 100vh; width: 260px; 
             background: #0a0a0a; border-right: 1px solid #222; 
             padding-top: 20px; z-index: 2000; 
-            display: flex; flex-direction: column;
-            transition: transform 0.3s ease-in-out;
+            display: flex; flex-direction: column; transition: transform 0.3s;
         }
         .nav-container { flex-grow: 1; overflow-y: auto; }
-        
         .brand { font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 30px; letter-spacing: 2px; font-style: italic; }
-        .nav-item { padding: 18px 25px; color: #888; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.2s; font-size: 1rem; border-left: 3px solid transparent; }
-        .nav-item:hover, .nav-item.active { color: var(--neon); background: rgba(57,255,20,0.03); border-left-color: var(--neon); }
-        
+        .nav-item { padding: 15px 25px; color: #888; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.2s; font-size: 1rem; }
+        .nav-item:hover, .nav-item.active { color: var(--neon); background: rgba(57,255,20,0.05); border-left: 4px solid var(--neon); }
         .user-footer { padding: 20px; background: #000; border-top: 1px solid #222; text-align: center; }
-        .user-name-box { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; margin: 0 auto; font-weight: bold; color: white; }
-
-        .main-content { margin-left: 260px; padding: 30px; transition: 0.3s; }
-
-        /* NOTIFICACIONES TOAST */
-        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
-        .toast-msg {
-            background: #111; border-left: 4px solid var(--neon); color: #fff;
-            padding: 15px 20px; border-radius: 4px; box-shadow: 0 5px 20px rgba(0,0,0,0.8);
-            display: flex; align-items: center; gap: 12px; animation: slideIn 0.3s ease-out forwards;
-            min-width: 280px; font-size: 0.9rem; border: 1px solid #333;
-        }
-        .toast-msg.error { border-left-color: #ff3333; }
-        .toast-msg.info { border-left-color: #33ccff; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-        /* MODALES */
-        .modal-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); z-index: 5000; 
-            display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s;
-        }
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
-        .modal-box { 
-            background: #111; width: 450px; max-width: 90%; padding: 40px; border-radius: 16px; 
-            border: 1px solid var(--border); box-shadow: 0 0 60px rgba(57,255,20,0.1); 
-        }
-        .modal-lg-box { width: 800px; max-width: 95%; max-height: 90vh; overflow-y: auto; }
-
-        /* TABLAS */
-        .table-responsive-custom { overflow-x: auto; }
-        .table-custom { width: 100%; border-collapse: separate; border-spacing: 0 5px; color: #ccc; min-width: 600px; }
-        .table-custom th { text-align: left; padding: 15px; color: var(--neon); border-bottom: 1px solid #333; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
-        .table-custom td { padding: 15px; background: rgba(255,255,255,0.02); border-bottom: none; font-size: 0.95rem; }
-        .table-custom tr:first-child td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
-        .table-custom tr:first-child td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
         
-        .user-card { display: flex; align-items: center; justify-content: space-between; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 8px; border: 1px solid #222; }
+        .main-content { margin-left: 260px; padding: 20px; transition: 0.3s; }
 
-        /* RESPONSIVE */
+        /* TOAST & MODAL */
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
+        .toast-msg { background: #111; border-left: 4px solid var(--neon); color: #fff; padding: 15px 20px; border-radius: 4px; display: flex; align-items: center; gap: 12px; min-width: 250px; border: 1px solid #333; animation: slideIn 0.3s ease-out forwards; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 5000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-box { background: #111; width: 420px; padding: 30px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 0 50px rgba(57,255,20,0.15); }
+        
+        /* TABLAS */
+        .table-custom { width: 100%; border-collapse: separate; border-spacing: 0 5px; color: #ccc; }
+        .table-custom th { text-align: left; padding: 12px; color: var(--neon); border-bottom: 1px solid #333; text-transform: uppercase; font-size: 0.85rem; }
+        .table-custom td { padding: 12px; background: rgba(255,255,255,0.03); border: none; font-size: 0.95rem; }
+        
         @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); width: 280px; }
-            .sidebar.active { transform: translateX(0); }
+            .sidebar { transform: translateX(-100%); } .sidebar.active { transform: translateX(0); }
             .main-content { margin-left: 0; padding: 15px; }
-            #mobile-toggle { display: block !important; position: fixed; top: 15px; left: 15px; z-index: 3000; background: #000; border: 1px solid var(--neon); color: var(--neon); border-radius: 4px; padding: 8px 12px; }
-            .glass-panel { padding: 15px; }
-            /* Ajuste de botones sync en móvil */
-            .btn-group-sync { flex-direction: column; width: 100%; gap: 10px !important; }
-            .btn-group-sync button, .btn-group-sync a { width: 100%; margin: 0 !important; }
+            #mobile-toggle { display: block !important; position: fixed; top: 15px; left: 15px; z-index: 3000; background: #000; border: 1px solid var(--neon); color: var(--neon); padding: 5px 10px; border-radius: 4px; }
+            .btn-group-sync { flex-direction: column; width: 100%; }
+            .btn-group-sync button, .btn-group-sync a { width: 100% !important; margin-bottom: 5px; }
         }
         @media print { .sidebar, .no-print, #mobile-toggle { display: none; } .main-content { margin: 0; padding: 0; } body { background: white; color: black; } }
     </style>
@@ -137,23 +114,21 @@
             <h1 class="brand text-neon mb-0">GARAJE '89</h1>
             <p class="text-secondary small mb-5">ACCESO AL SISTEMA</p>
             <div class="text-start mb-4">
-                <label class="text-secondary small ms-1 mb-2">CONTRASEÑA</label>
                 <input type="password" id="login-pass" class="input-neon text-center" style="font-size: 1.5rem; letter-spacing: 5px;" placeholder="••••••" onkeydown="if(event.key==='Enter') login()">
             </div>
             <button onclick="login()" class="btn-neon w-100">INGRESAR</button>
-            <p id="login-error" class="text-danger small mt-3" style="min-height: 20px;"></p>
         </div>
     </div>
 
     <div id="modal-conflicto" class="modal-overlay">
-        <div class="modal-box modal-lg-box p-4">
-            <h4 class="text-warning text-center mb-4"><i class="bi bi-exclamation-triangle-fill"></i> CONFLICTO DE DATOS</h4>
-            <div class="glass-panel p-0 mb-4" style="max-height: 300px; overflow-y: auto;">
+        <div class="modal-box" style="width: 700px; max-width: 95%;">
+            <h4 class="text-warning text-center mb-4"><i class="bi bi-exclamation-triangle-fill"></i> CONFLICTO DETECTADO</h4>
+            <div style="max-height: 300px; overflow-y: auto;" class="mb-4">
                 <table class="table-custom"><thead><th>Producto</th><th>Firebase</th><th>Sheets</th></thead><tbody id="lista-conflictos"></tbody></table>
             </div>
-            <div class="row g-3">
-                <div class="col-6"><button onclick="resolverConflicto('FIREBASE')" class="btn btn-outline-light w-100 py-3">MANTENER FIREBASE</button></div>
-                <div class="col-6"><button onclick="resolverConflicto('SHEETS')" class="btn btn-warning w-100 fw-bold py-3">USAR SHEETS</button></div>
+            <div class="row g-2">
+                <div class="col-6"><button onclick="resolverConflicto('FIREBASE')" class="btn btn-outline-light w-100">MANTENER FIREBASE</button></div>
+                <div class="col-6"><button onclick="resolverConflicto('SHEETS')" class="btn btn-warning w-100 fw-bold">USAR SHEETS</button></div>
             </div>
         </div>
     </div>
@@ -173,9 +148,9 @@
                 </div>
             </div>
             <div class="user-footer">
-                <div class="mb-2"><i class="bi bi-person-circle text-secondary" style="font-size: 1.5rem;"></i></div>
-                <div id="user-display" class="user-name-box">Usuario</div>
-                <button onclick="location.reload()" class="btn btn-sm text-secondary mt-1 hover-danger">CERRAR SESIÓN</button>
+                <div class="mb-1"><i class="bi bi-person-circle text-secondary fs-4"></i></div>
+                <div id="user-display" class="fw-bold text-white mb-2">Usuario</div>
+                <button onclick="location.reload()" class="btn btn-sm btn-outline-secondary border-0 text-white">CERRAR SESIÓN</button>
             </div>
         </div>
 
@@ -185,20 +160,20 @@
                     <h3 class="text-white m-0">PUNTO DE VENTA</h3>
                     <div class="text-secondary small" id="date-display"></div>
                 </div>
-                <div class="glass-panel p-4">
+                <div class="glass-panel p-3">
                     <div class="input-group">
                         <span class="input-group-text bg-dark border-secondary text-neon"><i class="bi bi-upc-scan"></i></span>
-                        <input id="scanner" class="form-control bg-dark text-white border-secondary p-3" style="font-size: 1.2rem;" placeholder="Escanear producto..." autocomplete="off">
-                        <button class="btn btn-outline-secondary border-secondary text-white px-4" onclick="procesarScanPos()"><i class="bi bi-arrow-return-left"></i></button>
+                        <input id="scanner" class="form-control bg-dark text-white border-secondary p-2" style="font-size: 1.2rem;" placeholder="Escanear..." autocomplete="off">
+                        <button class="btn btn-outline-secondary border-secondary text-white px-3" onclick="procesarScanPos()"><i class="bi bi-arrow-return-left"></i></button>
                     </div>
                 </div>
                 <div class="glass-panel" style="min-height: 400px;">
-                    <div class="table-responsive-custom"><table class="table-custom"><thead><th>Producto</th><th>Cant</th><th>Precio</th><th>Total</th><th></th></thead><tbody id="cart-body"></tbody></table></div>
-                    <div class="mt-5 pt-4 border-top border-secondary">
-                        <div class="d-flex justify-content-between align-items-center mb-4"><span class="text-secondary fs-5">Total a Pagar:</span><h1 class="text-neon m-0 fw-bold">S/ <span id="total-lbl">0.00</span></h1></div>
-                        <div class="d-flex gap-3 justify-content-end">
-                            <button onclick="finalizar('cotizar')" class="btn-outline px-5 py-3"><i class="bi bi-file-earmark-pdf"></i> COTIZAR</button>
-                            <button onclick="finalizar('venta')" class="btn-neon px-5 py-3"><i class="bi bi-check-lg"></i> COBRAR</button>
+                    <div style="overflow-x: auto;"><table class="table-custom"><thead><th>Producto</th><th>Cant</th><th>Precio</th><th>Total</th><th></th></thead><tbody id="cart-body"></tbody></table></div>
+                    <div class="mt-4 pt-4 border-top border-secondary">
+                        <div class="d-flex justify-content-between align-items-center mb-3"><span class="text-secondary fs-5">Total:</span><h1 class="text-neon m-0">S/ <span id="total-lbl">0.00</span></h1></div>
+                        <div class="d-flex gap-2 justify-content-end">
+                            <button onclick="finalizar('cotizar')" class="btn-outline px-4"><i class="bi bi-file-earmark-pdf"></i> COTIZAR</button>
+                            <button onclick="finalizar('venta')" class="btn-neon px-4"><i class="bi bi-check-lg"></i> COBRAR</button>
                         </div>
                     </div>
                 </div>
@@ -207,11 +182,11 @@
             <div id="sec-entrada" class="view-section oculto">
                 <h3 class="text-white mb-4">ENTRADAS</h3>
                 <div class="glass-panel text-center py-5 d-flex flex-column align-items-center justify-content-center" style="min-height: 60vh;">
-                    <div style="font-size: 5rem; color: var(--neon); opacity: 0.8; margin-bottom: 20px;"><i class="bi bi-box-seam"></i></div>
+                    <div style="font-size: 4rem; color: var(--neon); opacity: 0.8; margin-bottom: 20px;"><i class="bi bi-box-seam"></i></div>
                     <h3 class="fw-light mb-4">Escanear para sumar <b class="text-neon">+1</b></h3>
-                    <div class="d-flex justify-content-center gap-2 w-100" style="max-width: 500px;">
-                        <input id="scanner-entrada" class="input-neon text-center p-3" style="font-size: 1.5rem;" placeholder="Código..." autocomplete="off">
-                        <button class="btn btn-outline-secondary border-secondary text-neon px-4" onclick="procesarScanEntrada()"><i class="bi bi-arrow-return-left fs-4"></i></button>
+                    <div class="d-flex justify-content-center gap-2 w-100" style="max-width: 400px;">
+                        <input id="scanner-entrada" class="input-neon text-center p-2" style="font-size: 1.5rem;" placeholder="Código..." autocomplete="off">
+                        <button class="btn btn-outline-secondary border-secondary text-neon" onclick="procesarScanEntrada()"><i class="bi bi-arrow-return-left fs-4"></i></button>
                     </div>
                     <div id="msg-entrada" class="mt-4 text-secondary fs-5">Listo para escanear...</div>
                 </div>
@@ -220,95 +195,65 @@
             <div id="sec-inv" class="view-section oculto">
                 <div class="d-flex flex-column flex-xl-row justify-content-between align-items-xl-center mb-4 gap-3">
                     <h3 class="text-white m-0">INVENTARIO</h3>
-                    <div class="d-flex gap-3 btn-group-sync">
-                        <a href="https://docs.google.com/spreadsheets/d/1sBeK5DD8nM9Ys02O28VoRi7wTS3k8VUA0GimYxw0Pdo/edit?usp=sharing" target="_blank" class="btn btn-success fw-bold text-white text-decoration-none d-flex align-items-center justify-content-center px-3" style="border-radius: 8px;">
+                    <div class="d-flex gap-2 btn-group-sync">
+                        <a href="https://docs.google.com/spreadsheets/d/1sBeK5DD8nM9Ys02O28VoRi7wTS3k8VUA0GimYxw0Pdo/edit?usp=sharing" target="_blank" class="btn btn-success fw-bold text-white text-decoration-none d-flex align-items-center justify-content-center">
                             <i class="bi bi-file-earmark-spreadsheet-fill me-2"></i> VER EXCEL
                         </a>
-                        
-                        <button class="btn btn-outline-success border-success text-success" onclick="syncFirebaseToSheets()">
-                            <i class="bi bi-cloud-upload me-2"></i> Firebase <i class="bi bi-arrow-right mx-1"></i> Sheets
+                        <button class="btn btn-outline-success" onclick="syncFirebaseToSheets()">
+                            <i class="bi bi-cloud-upload"></i> A Sheets
                         </button>
-                        <button class="btn btn-outline-warning border-warning text-warning" onclick="syncSheetsToFirebase()">
-                            <i class="bi bi-cloud-download me-2"></i> Sheets <i class="bi bi-arrow-right mx-1"></i> Firebase
+                        <button class="btn btn-outline-warning" onclick="syncSheetsToFirebase()">
+                            <i class="bi bi-cloud-download"></i> De Sheets
                         </button>
-                        
                         <button class="btn-neon" style="width: auto;" onclick="modalNuevo('')"><i class="bi bi-plus-lg me-2"></i> NUEVO</button>
                     </div>
                 </div>
                 <div class="glass-panel">
                     <div class="d-flex flex-column flex-md-row gap-3 mb-4">
-                        <input id="search-inv" class="input-neon" placeholder="Buscar por nombre o código..." onkeyup="filtrarInv()">
-                        <select id="filtro-prov" class="input-neon w-100 w-md-25" onchange="filtrarInv()"><option value="TODOS">Todos los proveedores</option></select>
+                        <input id="search-inv" class="input-neon" placeholder="Buscar..." onkeyup="filtrarInv()">
+                        <select id="filtro-prov" class="input-neon w-100 w-md-25" onchange="filtrarInv()"><option value="TODOS">Todos</option></select>
                     </div>
-                    <div style="max-height: 65vh; overflow-y: auto;" class="table-responsive-custom">
-                        <table class="table-custom">
-                            <thead><th>Código</th><th>Producto</th><th>Proveedor</th><th>Stock</th><th>Precio</th><th></th></thead>
-                            <tbody id="inv-body"></tbody>
-                        </table>
-                    </div>
+                    <div style="max-height: 60vh; overflow-y: auto;"><table class="table-custom"><thead><th>Código</th><th>Producto</th><th>Prov</th><th>Stock</th><th>Precio</th><th></th></thead><tbody id="inv-body"></tbody></table></div>
                 </div>
             </div>
 
             <div id="sec-dash" class="view-section oculto">
-                <h3 class="text-white mb-4">ESTADÍSTICAS Y REPORTES</h3>
-                <div class="row g-4 mb-4">
-                    <div class="col-md-4"><div class="glass-panel p-4 d-flex align-items-center gap-4"><div class="bg-dark p-3 rounded text-neon fs-2"><i class="bi bi-cash-stack"></i></div><div><h6 class="text-secondary m-0">TOTAL HISTÓRICO</h6><h3 class="text-white m-0">S/ <span id="d-hist">0.00</span></h3></div></div></div>
-                    <div class="col-md-4"><div class="glass-panel p-4 d-flex align-items-center gap-4"><div class="bg-dark p-3 rounded text-warning fs-2"><i class="bi bi-calendar-check"></i></div><div><h6 class="text-secondary m-0">VENTAS HOY</h6><h3 class="text-white m-0">S/ <span id="d-hoy">0.00</span></h3></div></div></div>
-                    <div class="col-md-4"><div class="glass-panel p-4 d-flex align-items-center gap-4"><div class="bg-dark p-3 rounded text-info fs-2"><i class="bi bi-box"></i></div><div><h6 class="text-secondary m-0">PRODUCTOS HOY</h6><h3 class="text-white m-0" id="d-count">0</h3></div></div></div>
+                <h3 class="text-white mb-4">REPORTES</h3>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4"><div class="glass-panel p-3 d-flex align-items-center gap-3"><div class="bg-dark p-3 rounded text-neon fs-3"><i class="bi bi-cash-stack"></i></div><div><h6 class="text-secondary m-0">HISTÓRICO</h6><h4 class="text-white m-0">S/ <span id="d-hist">0.00</span></h4></div></div></div>
+                    <div class="col-md-4"><div class="glass-panel p-3 d-flex align-items-center gap-3"><div class="bg-dark p-3 rounded text-warning fs-3"><i class="bi bi-calendar-check"></i></div><div><h6 class="text-secondary m-0">HOY</h6><h4 class="text-white m-0">S/ <span id="d-hoy">0.00</span></h4></div></div></div>
+                    <div class="col-md-4"><div class="glass-panel p-3 d-flex align-items-center gap-3"><div class="bg-dark p-3 rounded text-info fs-3"><i class="bi bi-box"></i></div><div><h6 class="text-secondary m-0">ITEMS HOY</h6><h4 class="text-white m-0" id="d-count">0</h4></div></div></div>
                 </div>
-
                 <div class="glass-panel mb-4">
-                    <h5 class="text-neon mb-4"><i class="bi bi-filter-circle"></i> REPORTE POR PERIODO</h5>
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-4"><label class="text-secondary small mb-2">DESDE</label><input type="date" id="dash-desde" class="input-neon"></div>
-                        <div class="col-md-4"><label class="text-secondary small mb-2">HASTA</label><input type="date" id="dash-hasta" class="input-neon"></div>
-                        <div class="col-md-4"><button onclick="generarReporte()" class="btn-neon w-100 py-3"><i class="bi bi-search"></i> GENERAR REPORTE</button></div>
+                    <h5 class="text-neon mb-3">FILTRAR POR FECHA</h5>
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-4"><label class="text-secondary small">DESDE</label><input type="date" id="dash-desde" class="input-neon"></div>
+                        <div class="col-md-4"><label class="text-secondary small">HASTA</label><input type="date" id="dash-hasta" class="input-neon"></div>
+                        <div class="col-md-4"><button onclick="generarReporte()" class="btn-neon w-100"><i class="bi bi-search"></i> BUSCAR</button></div>
                     </div>
                 </div>
-
-                <div class="row g-4">
-                    <div class="col-md-8">
-                        <div class="glass-panel">
-                            <h5 class="text-white mb-4">DETALLE DE VENTAS</h5>
-                            <div style="max-height: 300px; overflow-y: auto;" class="table-responsive-custom">
-                                <table class="table-custom">
-                                    <thead><th>Fecha</th><th>Producto</th><th>Cant</th><th>Total</th></thead>
-                                    <tbody id="dash-report-body"><tr><td colspan="4" class="text-center text-secondary py-4">Selecciona fechas y filtra...</td></tr></tbody>
-                                </table>
-                            </div>
-                            <h4 class="text-end mt-4 text-neon">TOTAL: S/ <span id="dash-periodo-total">0.00</span></h4>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="glass-panel h-100">
-                            <h5 class="text-white mb-4">TOP PRODUCTOS</h5>
-                            <canvas id="chartProds" style="height: 250px; width: 100%;"></canvas>
-                        </div>
-                    </div>
+                <div class="row g-3">
+                    <div class="col-md-8"><div class="glass-panel"><div style="max-height: 250px; overflow-y: auto;"><table class="table-custom"><thead><th>Fecha</th><th>Prod</th><th>Cant</th><th>Total</th></thead><tbody id="dash-report-body"></tbody></table></div><h4 class="text-end mt-3 text-neon">TOTAL: S/ <span id="dash-periodo-total">0.00</span></h4></div></div>
+                    <div class="col-md-4"><div class="glass-panel"><canvas id="chartProds" style="height: 200px; width: 100%;"></canvas></div></div>
                 </div>
             </div>
 
             <div id="sec-ventas" class="view-section oculto">
-                <h3 class="text-white m-0 mb-4">HISTORIAL RECIENTE</h3>
-                <div class="glass-panel table-responsive-custom" style="max-height: 75vh; overflow-y: auto;">
-                    <table class="table-custom">
-                        <thead><th>Fecha</th><th>Vendedor</th><th>Producto</th><th>Total</th><th></th></thead>
-                        <tbody id="ventas-body"></tbody>
-                    </table>
-                </div>
+                <h3 class="text-white m-0 mb-4">HISTORIAL</h3>
+                <div class="glass-panel" style="max-height: 75vh; overflow-y: auto;"><table class="table-custom"><thead><th>Fecha</th><th>Vendedor</th><th>Producto</th><th>Total</th><th></th></thead><tbody id="ventas-body"></tbody></table></div>
             </div>
 
             <div id="sec-users" class="view-section oculto">
-                <h3 class="text-white mb-4">GESTIÓN DE USUARIOS</h3>
+                <h3 class="text-white mb-4">USUARIOS</h3>
                 <div class="row g-4">
                     <div class="col-md-5">
                         <div class="glass-panel">
-                            <h5 class="text-neon mb-4">NUEVO USUARIO</h5>
-                            <input id="u-id" class="input-neon mb-3" placeholder="ID de Usuario">
-                            <input id="u-nom" class="input-neon mb-3" placeholder="Nombre Completo">
-                            <input id="u-pass" class="input-neon mb-3" type="password" placeholder="Contraseña">
-                            <select id="u-rol" class="input-neon mb-4"><option value="trabajador">Trabajador</option><option value="admin">Administrador</option></select>
-                            <button class="btn-neon w-100" onclick="crearUser()">CREAR USUARIO</button>
+                            <h5 class="text-neon mb-3">NUEVO</h5>
+                            <input id="u-id" class="input-neon mb-2" placeholder="ID">
+                            <input id="u-nom" class="input-neon mb-2" placeholder="Nombre">
+                            <input id="u-pass" class="input-neon mb-2" type="password" placeholder="Clave">
+                            <select id="u-rol" class="input-neon mb-3"><option value="trabajador">Trabajador</option><option value="admin">Admin</option></select>
+                            <button class="btn-neon w-100" onclick="crearUser()">CREAR</button>
                         </div>
                     </div>
                     <div class="col-md-7"><div class="glass-panel"><div id="users-list"></div></div></div>
@@ -322,14 +267,14 @@
             <h4 class="text-neon text-center mb-4" id="modal-titulo">PRODUCTO</h4>
             <input id="n-id-edit" type="hidden"> 
             <input id="n-codigo" class="input-neon mb-3" readonly style="background: #222; color: #666;">
-            <input id="n-nombre" class="input-neon mb-3" placeholder="Nombre del Producto">
+            <input id="n-nombre" class="input-neon mb-3" placeholder="Nombre">
             <input id="n-prov" class="input-neon mb-3" placeholder="Proveedor" list="lista-provs"><datalist id="lista-provs"></datalist>
-            <div class="d-flex gap-3 mb-3">
+            <div class="d-flex gap-2 mb-3">
                 <input id="n-costo" type="number" class="input-neon" placeholder="Costo">
                 <input id="n-precio" type="number" class="input-neon" placeholder="Precio">
             </div>
-            <input id="n-stock" type="number" class="input-neon mb-4" placeholder="Stock Inicial">
-            <div class="d-flex gap-3">
+            <input id="n-stock" type="number" class="input-neon mb-4" placeholder="Stock">
+            <div class="d-flex gap-2">
                 <button class="btn-outline w-50" onclick="closeModal()">CANCELAR</button>
                 <button class="btn-neon w-50" onclick="guardarProducto()">GUARDAR</button>
             </div>
@@ -337,14 +282,12 @@
     </div>
 
 <script>
-    // --- CONFIGURACIÓN ---
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwvoD4_lvCa-nrb5ijAYrcjKsHdETXRRwgouCfjE8Yi9e0BIhepZnC4E3N0pK6JyNo7/exec"; 
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziis4eKt8Ocj7iNq1injeiOVqds1JNHnwZLcHvFx2c48bTj2wiiBbAZP9xhZ56fT6G/exec"; 
     const firebaseConfig = { apiKey: "AIzaSyBzUErnjQEGE9-neDh5z6VJ_xNaHRmAkew", authDomain: "garaje89-inventario.firebaseapp.com", projectId: "garaje89-inventario", storageBucket: "garaje89-inventario.firebasestorage.app", messagingSenderId: "538336429741", appId: "1:538336429741:web:0f7ce96f624f3568a8e824" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     let usuarioActual = null, carrito = [], inventario = [], cambiosPendientes = [];
 
-    // --- UTILS ---
     function showToast(msg, tipo = 'success') {
         const c = document.getElementById('toast-container'), t = document.createElement('div');
         t.className = `toast-msg ${tipo}`;
@@ -352,7 +295,6 @@
         t.innerHTML = `${icon} <span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.remove(), 3500);
     }
 
-    // --- LOGIN ---
     function login() {
         const pass = document.getElementById('login-pass').value.trim();
         if(!pass) return;
@@ -371,30 +313,20 @@
         }).catch(e => showToast("Error conexión", "error"));
     }
 
-    // --- INVENTARIO: CARGA Y EDICIÓN ---
     db.collection("inventario").onSnapshot(snap => {
         inventario = []; const tbody = document.getElementById('inv-body'); tbody.innerHTML = '';
         const dl = document.getElementById('lista-provs'); dl.innerHTML = '';
         snap.forEach(doc => {
             const p = doc.data(); p.id = doc.id; inventario.push(p);
             dl.innerHTML += `<option value="${p.proveedor}">`;
-            tbody.innerHTML += `
-                <tr>
-                    <td class="small text-secondary">${p.codigo}</td>
-                    <td class="text-white fw-bold">${p.nombre}</td>
-                    <td>${p.proveedor}</td>
-                    <td>${p.stock}</td>
-                    <td class="text-neon">S/ ${p.precio}</td>
-                    <td><button class="btn btn-sm btn-outline-secondary border-0 text-white" onclick="abrirEditar('${p.id}')"><i class="bi bi-pencil-fill"></i></button></td>
-                </tr>`;
+            tbody.innerHTML += `<tr><td class="small text-secondary">${p.codigo}</td><td class="text-white fw-bold">${p.nombre}</td><td>${p.proveedor}</td><td>${p.stock}</td><td class="text-neon">S/ ${p.precio}</td><td><button class="btn btn-sm btn-outline-secondary border-0 text-white" onclick="abrirEditar('${p.id}')"><i class="bi bi-pencil-fill"></i></button></td></tr>`;
         });
     });
 
     function abrirEditar(id) {
-        const p = inventario.find(i => i.id === id);
-        if(!p) return;
+        const p = inventario.find(i => i.id === id); if(!p) return;
         document.getElementById('modal-overlay').classList.add('active');
-        document.getElementById('modal-titulo').innerText = "EDITAR PRODUCTO";
+        document.getElementById('modal-titulo').innerText = "EDITAR";
         document.getElementById('n-id-edit').value = p.id;
         document.getElementById('n-codigo').value = p.codigo;
         document.getElementById('n-nombre').value = p.nombre;
@@ -403,91 +335,45 @@
         document.getElementById('n-precio').value = p.precio;
         document.getElementById('n-stock').value = p.stock;
     }
-
     function modalNuevo(cod) {
         document.getElementById('modal-overlay').classList.add('active');
-        document.getElementById('modal-titulo').innerText = "NUEVO PRODUCTO";
-        document.getElementById('n-id-edit').value = ""; // Limpiar ID para modo nuevo
+        document.getElementById('modal-titulo').innerText = "NUEVO";
+        document.getElementById('n-id-edit').value = "";
         document.getElementById('n-codigo').value = cod || "";
-        document.getElementById('n-nombre').value = "";
-        document.getElementById('n-prov').value = "";
-        document.getElementById('n-costo').value = "";
-        document.getElementById('n-precio').value = "";
-        document.getElementById('n-stock').value = "1";
+        document.getElementById('n-nombre').value = ""; document.getElementById('n-prov').value = "";
+        document.getElementById('n-costo').value = ""; document.getElementById('n-precio').value = ""; document.getElementById('n-stock').value = "1";
     }
-
     function guardarProducto() {
-        const idEdit = document.getElementById('n-id-edit').value;
-        const p = {
-            codigo: document.getElementById('n-codigo').value,
-            nombre: document.getElementById('n-nombre').value,
-            proveedor: document.getElementById('n-prov').value,
-            costo: Number(document.getElementById('n-costo').value),
-            precio: Number(document.getElementById('n-precio').value),
-            stock: Number(document.getElementById('n-stock').value)
-        };
+        const id = document.getElementById('n-id-edit').value;
+        const p = { codigo: document.getElementById('n-codigo').value, nombre: document.getElementById('n-nombre').value, proveedor: document.getElementById('n-prov').value, costo: Number(document.getElementById('n-costo').value), precio: Number(document.getElementById('n-precio').value), stock: Number(document.getElementById('n-stock').value) };
         if(!p.nombre || !p.precio) return showToast("Faltan datos", "error");
-
-        if(idEdit) {
-            // EDICIÓN
-            db.collection("inventario").doc(idEdit).update(p).then(() => { closeModal(); showToast("Producto Editado"); });
-        } else {
-            // NUEVO
-            db.collection("inventario").add(p).then(() => { closeModal(); showToast("Producto Creado"); });
-        }
+        if(id) db.collection("inventario").doc(id).update(p).then(() => { closeModal(); showToast("Editado"); });
+        else db.collection("inventario").add(p).then(() => { closeModal(); showToast("Creado"); });
     }
     function closeModal(){ document.getElementById('modal-overlay').classList.remove('active'); }
 
-    // --- DASHBOARD: REPORTES FILTRADOS ---
     async function generarReporte() {
-        const dStart = document.getElementById('dash-desde').value;
-        const dEnd = document.getElementById('dash-hasta').value;
-        
-        if(!dStart || !dEnd) return showToast("Selecciona fechas primero", "error");
-        
-        showToast("Generando reporte...", "info");
-        const start = new Date(dStart + "T00:00:00");
-        const end = new Date(dEnd + "T23:59:59");
-        
+        const dStart = document.getElementById('dash-desde').value, dEnd = document.getElementById('dash-hasta').value;
+        if(!dStart || !dEnd) return showToast("Fechas requeridas", "error");
+        showToast("Generando...", "info");
         try {
-            const snap = await db.collection("ventas").where("fecha", ">=", start).where("fecha", "<=", end).orderBy("fecha", "desc").get();
-            const tbody = document.getElementById('dash-report-body');
-            tbody.innerHTML = "";
-            let totalPeriodo = 0;
-            const counts = {};
-
-            if(snap.empty) {
-                tbody.innerHTML = "<tr><td colspan='4' class='text-center'>No hay ventas en este periodo</td></tr>";
-                updateChart({});
-                document.getElementById('dash-periodo-total').innerText = "0.00";
-                return;
-            }
-
-            snap.forEach(doc => {
-                const v = doc.data();
-                const d = v.fecha.toDate();
-                totalPeriodo += v.total;
-                counts[v.nombre] = (counts[v.nombre] || 0) + v.cantidad;
-                tbody.innerHTML += `<tr><td class="small">${d.toLocaleDateString()}</td><td>${v.nombre}</td><td>${v.cantidad}</td><td class="text-neon">${v.total.toFixed(2)}</td></tr>`;
-            });
-            
-            document.getElementById('dash-periodo-total').innerText = totalPeriodo.toFixed(2);
-            updateChart(counts);
-            showToast("Reporte generado con éxito");
-
-        } catch(e) { console.error(e); showToast("Error generando reporte: " + e.message, "error"); }
+            const snap = await db.collection("ventas").where("fecha", ">=", new Date(dStart+"T00:00:00")).where("fecha", "<=", new Date(dEnd+"T23:59:59")).orderBy("fecha", "desc").get();
+            const tbody = document.getElementById('dash-report-body'); tbody.innerHTML = "";
+            let tot = 0, counts = {};
+            if(snap.empty) { tbody.innerHTML = "<tr><td colspan='4' class='text-center'>Sin datos</td></tr>"; updateChart({}); document.getElementById('dash-periodo-total').innerText = "0.00"; return; }
+            snap.forEach(doc => { const v=doc.data(); tot+=v.total; counts[v.nombre]=(counts[v.nombre]||0)+v.cantidad; tbody.innerHTML+=`<tr><td class="small">${v.fecha.toDate().toLocaleDateString()}</td><td>${v.nombre}</td><td>${v.cantidad}</td><td class="text-neon">${v.total.toFixed(2)}</td></tr>`; });
+            document.getElementById('dash-periodo-total').innerText = tot.toFixed(2); updateChart(counts);
+        } catch(e) { console.error(e); }
     }
 
     let myChart;
     function updateChart(data) {
-        const ctx = document.getElementById('chartProds');
-        if(!ctx) return;
+        const ctx = document.getElementById('chartProds'); if(!ctx) return;
         const lbls = Object.keys(data).sort((a,b)=>data[b]-data[a]).slice(0,5);
         if(myChart) myChart.destroy();
-        myChart = new Chart(ctx, { type: 'bar', data: { labels: lbls, datasets: [{ label: 'Unidades', data: lbls.map(k=>data[k]), backgroundColor: '#39ff14' }] }, options: { plugins:{legend:{display:false}}, scales:{x:{ticks:{color:'#fff'}}, y:{ticks:{color:'#fff'}}} } });
+        myChart = new Chart(ctx, { type: 'bar', data: { labels: lbls, datasets: [{ label: 'Unds', data: lbls.map(k=>data[k]), backgroundColor: '#39ff14' }] }, options: { plugins:{legend:{display:false}}, scales:{x:{ticks:{color:'#fff'}}, y:{ticks:{color:'#fff'}}} } });
     }
 
-    // --- REALTIME STATS (GLOBAL) ---
     db.collection("ventas").orderBy("fecha", "desc").limit(20).onSnapshot(snap => {
         const tb = document.getElementById('ventas-body'); tb.innerHTML = '';
         let hoy=0, tot=0, cant=0; const dHoy = new Date().toDateString();
@@ -502,7 +388,6 @@
         document.getElementById('d-count').innerText = cant;
     });
 
-    // --- FUNCIONES CORE (POS, SYNC, ETC) ---
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
     function nav(id, el) {
         document.querySelectorAll('.view-section').forEach(e => e.classList.add('oculto'));
@@ -513,17 +398,13 @@
         if(id === 'pos') document.getElementById('scanner').focus();
     }
     
-    // Scanner
     const scP = document.getElementById('scanner');
     scP.addEventListener('keydown', (e) => { if(e.key==='Enter') { e.preventDefault(); procesarScanPos(); } });
     function procesarScanPos() {
         const cod = scP.value.trim(); if(!cod) return; scP.value='';
         const p = inventario.find(i => i.codigo === cod);
-        if(p) { 
-            const ex = carrito.find(i => i.codigo === p.codigo);
-            if(ex) ex.cantidad++; else carrito.push({...p, cantidad:1, precio:Number(p.precio)});
-            renderCart(); showToast("Agregado: "+p.nombre);
-        } else { if(confirm("¿Registrar nuevo?")) modalNuevo(cod); else scP.focus(); }
+        if(p) { const ex = carrito.find(i => i.codigo === p.codigo); if(ex) ex.cantidad++; else carrito.push({...p, cantidad:1, precio:Number(p.precio)}); renderCart(); showToast("Agregado"); } 
+        else { if(confirm("¿Registrar?")) modalNuevo(cod); else scP.focus(); }
     }
     function renderCart(){ const t = document.getElementById('cart-body'); t.innerHTML=''; let tot=0; carrito.forEach((p,i)=>{ tot+=p.cantidad*p.precio; t.innerHTML+=`<tr><td>${p.nombre}</td><td>${p.cantidad}</td><td>${p.precio}</td><td class="text-neon fw-bold">${(p.cantidad*p.precio).toFixed(2)}</td><td><i class="bi bi-x-circle text-danger fs-5" style="cursor:pointer" onclick="carrito.splice(${i},1);renderCart()"></i></td></tr>`; }); document.getElementById('total-lbl').innerText=tot.toFixed(2); }
 
@@ -555,18 +436,35 @@
         }
     }
     
-    // PDF
     function generarPDF(tipo, items, total, codigo) {
         const { jsPDF } = window.jspdf; const doc = new jsPDF();
-        doc.setFillColor(10,10,10); doc.rect(0,0,210,40,'F'); doc.setTextColor(57,255,20); doc.setFontSize(22); doc.text("GARAJE '89",105,20,null,null,"center");
-        doc.setTextColor(0,0,0); doc.setFontSize(10); doc.text(`COD: ${codigo}`,15,50); doc.text(`FECHA: ${new Date().toLocaleString()}`,15,56);
-        const body = items.map(i=>[i.nombre, i.cantidad, `S/ ${i.precio}`, `S/ ${i.cantidad*i.precio}`]);
-        doc.autoTable({startY:65, head:[['ITEM','CANT','UNIT','TOTAL']], body:body, theme:'grid', headStyles:{fillColor:[0,0,0]}});
-        doc.setFontSize(14); doc.text(`TOTAL: S/ ${total.toFixed(2)}`,195,doc.lastAutoTable.finalY+10,null,null,"right");
+        // HEADER NEGRO + TEXTO NEON
+        doc.setFillColor(0,0,0); doc.rect(0,0,210,40,'F'); 
+        doc.setTextColor(57,255,20); doc.setFontSize(22); doc.setFont("helvetica", "bold"); doc.text("GARAJE '89",105,20,null,null,"center");
+        doc.setTextColor(255,255,255); doc.setFontSize(10); doc.text("MECANICA & REPUESTOS",105,28,null,null,"center");
+        
+        doc.setTextColor(0,0,0); doc.text(`FECHA: ${new Date().toLocaleString()}`,15,50); doc.text(`CÓDIGO: ${codigo}`,15,56); doc.text(`VENDEDOR: ${usuarioActual.nombre}`,15,62);
+        
+        doc.setFontSize(16);
+        if(tipo==='cotizar') { doc.setTextColor(100,100,100); doc.text("COTIZACIÓN",195,55,null,null,"right"); }
+        else { doc.setTextColor(0,0,0); doc.text("BOLETA DE VENTA",195,55,null,null,"right"); }
+
+        const body = items.map(i=>[i.codigo, i.nombre, i.cantidad, `S/ ${i.precio.toFixed(2)}`, `S/ ${(i.cantidad*i.precio).toFixed(2)}`]);
+        doc.autoTable({
+            startY:70, head:[['COD','DESCRIPCION','CANT','P.UNIT','TOTAL']], body:body, theme:'grid',
+            headStyles:{fillColor:[0,0,0], textColor:[57,255,20], fontStyle:'bold'},
+            bodyStyles:{textColor:[0,0,0]}, styles:{fontSize:9}
+        });
+        
+        doc.setFontSize(14); doc.setFont("helvetica", "bold");
+        doc.text(`TOTAL A PAGAR: S/ ${total.toFixed(2)}`,195,doc.lastAutoTable.finalY+10,null,null,"right");
+        
+        doc.setFontSize(8); doc.setFont("helvetica", "normal"); doc.setTextColor(0,0,0);
+        doc.text("Gracias por su preferencia - No se aceptan devoluciones pasadas las 24hrs",105,280,null,null,"center");
+        
         doc.save(`${codigo}.pdf`);
     }
 
-    // SYNC
     async function verificarConflictosAlInicio() {
         try {
             const res = await fetch(APPS_SCRIPT_URL, {method:'POST', body:JSON.stringify({action:"leerInventario"})});
@@ -593,7 +491,7 @@
                 if(c.tipo==='NEW') b.set(db.collection("inventario").doc(), {...c.dataFull, costo:Number(c.dataFull.costo), precio:Number(c.dataFull.precio), stock:Number(c.dataFull.stock)});
                 else b.update(db.collection("inventario").doc(c.fid), {precio:Number(c.dataFull.precio), stock:Number(c.dataFull.stock)});
             });
-            b.commit().then(()=>showToast("Actualizado con Sheets"));
+            b.commit().then(()=>showToast("Actualizado"));
         }
     }
     function syncFirebaseToSheets() {
