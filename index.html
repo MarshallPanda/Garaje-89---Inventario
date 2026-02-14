@@ -10,65 +10,190 @@
     
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';</script>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
-        :root { --neon: #39ff14; --dark: #050505; --panel: rgba(20, 20, 20, 0.95); }
-        body { background-color: var(--dark); color: #e0e0e0; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
+        :root { 
+            --neon: #39ff14; 
+            --dark: #050505; 
+            --panel: rgba(20, 20, 20, 0.95); 
+            --border: rgba(57, 255, 20, 0.3);
+        }
+        
+        body { 
+            background-color: var(--dark); 
+            color: #e0e0e0; 
+            font-family: 'Segoe UI', sans-serif; 
+            overflow-x: hidden; 
+            margin: 0;
+        }
+
+        /* SCROLLBAR OCULTO */
         ::-webkit-scrollbar { display: none; }
+
         .oculto { display: none !important; }
         .text-neon { color: var(--neon) !important; text-shadow: 0 0 10px rgba(57,255,20,0.4); }
         
-        /* Paneles de Vidrio */
-        .glass-panel { background: var(--panel); border: 1px solid rgba(57,255,20,0.3); border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
-        
-        /* Inputs y Botones */
-        .input-neon { background: rgba(0,0,0,0.4); border: 1px solid #444; color: white; padding: 10px; width: 100%; border-radius: 6px; outline: none; transition: 0.3s; }
-        .input-neon:focus { border-color: var(--neon); box-shadow: 0 0 8px rgba(57,255,20,0.2); }
-        
-        .btn-neon { background: var(--neon); color: black; font-weight: 800; border: none; padding: 10px 20px; border-radius: 6px; width: 100%; transition: 0.3s; text-transform: uppercase; }
-        .btn-neon:hover { box-shadow: 0 0 20px var(--neon); transform: translateY(-2px); }
+        /* PANELES DE VIDRIO */
+        .glass-panel { 
+            background: var(--panel); 
+            border: 1px solid var(--border); 
+            border-radius: 12px; 
+            padding: 25px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); 
+            transition: 0.3s;
+        }
 
-        /* SIDEBAR */
-        .sidebar { position: fixed; height: 100vh; width: 260px; background: #0a0a0a; border-right: 1px solid #222; padding-top: 20px; display: flex; flex-direction: column; z-index: 1000; }
-        .nav-item { padding: 15px 25px; color: #888; cursor: pointer; display: flex; gap: 15px; transition: 0.2s; align-items: center; }
-        .nav-item:hover, .nav-item.active { color: var(--neon); background: rgba(57,255,20,0.05); border-left: 4px solid var(--neon); }
-        .main-content { margin-left: 260px; padding: 20px; }
+        /* INPUTS Y BOTONES */
+        .input-neon { 
+            background: rgba(0,0,0,0.4); 
+            border: 1px solid #444; 
+            color: white; 
+            padding: 12px 15px; 
+            width: 100%; 
+            border-radius: 6px; 
+            outline: none; 
+            transition: 0.3s;
+        }
+        .input-neon:focus { 
+            border-color: var(--neon); 
+            box-shadow: 0 0 10px rgba(57,255,20,0.2); 
+        }
         
-        /* TABS */
-        .nav-pills .nav-link.active { background-color: var(--neon); color: black; font-weight: bold; }
-        .nav-pills .nav-link { color: #888; border: 1px solid #333; margin-right: 5px; cursor: pointer; }
+        .btn-neon { 
+            background: var(--neon); 
+            color: black; 
+            font-weight: 800; 
+            border: none; 
+            padding: 12px 20px; 
+            border-radius: 6px; 
+            width: 100%; 
+            text-transform: uppercase; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            letter-spacing: 1px;
+        }
+        .btn-neon:hover { 
+            box-shadow: 0 0 20px var(--neon); 
+            transform: translateY(-2px); 
+        }
 
-        /* TABLAS */
-        .table-custom { width: 100%; border-collapse: separate; border-spacing: 0 5px; }
-        .table-custom th { color: var(--neon); border-bottom: 1px solid #333; padding: 10px; text-align: left; }
-        .table-custom td { background: rgba(255,255,255,0.03); border: none; padding: 10px; color: #ddd; }
+        /* BARRA LATERAL (SIDEBAR) */
+        .sidebar { 
+            position: fixed; 
+            height: 100vh; 
+            width: 260px; 
+            background: #0a0a0a; 
+            border-right: 1px solid #222; 
+            padding-top: 30px; 
+            display: flex; 
+            flex-direction: column; 
+            z-index: 1000; 
+        }
+        .nav-item { 
+            padding: 15px 25px; 
+            color: #888; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            transition: 0.2s; 
+            font-size: 1.1rem;
+        }
+        .nav-item:hover, .nav-item.active { 
+            color: var(--neon); 
+            background: rgba(57,255,20,0.05); 
+            border-left: 4px solid var(--neon); 
+        }
+        .user-footer {
+            margin-top: auto;
+            padding: 20px;
+            border-top: 1px solid #222;
+            text-align: center;
+        }
         
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 5000; display: flex; justify-content: center; align-items: center; }
+        .main-content { 
+            margin-left: 260px; 
+            padding: 30px; 
+        }
+
+        /* PESTAÑAS (TABS) */
+        .nav-pills .nav-link { 
+            color: #888; 
+            border: 1px solid #333; 
+            margin-right: 8px; 
+            cursor: pointer; 
+            border-radius: 6px;
+        }
+        .nav-pills .nav-link.active { 
+            background-color: var(--neon); 
+            color: black; 
+            font-weight: bold; 
+            border-color: var(--neon);
+        }
+
+        /* TABLAS PERSONALIZADAS */
+        .table-custom { 
+            width: 100%; 
+            border-collapse: separate; 
+            border-spacing: 0 8px; 
+        }
+        .table-custom th { 
+            color: var(--neon); 
+            border-bottom: 1px solid #333; 
+            padding: 10px; 
+            text-align: left; 
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+        .table-custom td { 
+            background: rgba(255,255,255,0.03); 
+            border: none; 
+            padding: 12px; 
+            color: #ddd; 
+            vertical-align: middle;
+        }
+        .hover-row:hover td {
+            background: rgba(57, 255, 20, 0.1);
+            cursor: pointer;
+        }
+        
+        /* MODAL (Login y Alertas) */
+        .modal-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.95); 
+            z-index: 5000; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
     </style>
 </head>
 <body>
 
     <div id="login-screen" class="modal-overlay">
-        <div class="glass-panel text-center" style="width: 400px;">
-            <h1 class="text-neon mb-4 fst-italic">GARAJE '89</h1>
-            <p class="text-secondary small mb-4">ACCESO AL SISTEMA</p>
-            <div class="text-start mb-3">
-                <label class="small text-secondary">Correo</label>
-                <input id="email" class="input-neon" placeholder="admin@garaje89.com">
+        <div class="glass-panel text-center" style="width: 450px; padding: 40px;">
+            <h1 class="text-neon mb-2 fst-italic" style="letter-spacing: 2px;">GARAJE '89</h1>
+            <p class="text-secondary small mb-5">SISTEMA DE CONTROL DE ACCESO</p>
+            
+            <div class="mb-4 text-start">
+                <label class="text-secondary small mb-2">CLAVE DE ACCESO</label>
+                <input id="login-pass" type="password" class="input-neon text-center fw-bold text-neon" 
+                       style="font-size: 1.5rem; letter-spacing: 5px;" 
+                       placeholder="•••••"
+                       onkeydown="if(event.key==='Enter') loginSystem()">
             </div>
-            <div class="text-start mb-4">
-                <label class="small text-secondary">Contraseña</label>
-                <input id="password" type="password" class="input-neon" placeholder="••••••••">
-            </div>
-            <button onclick="loginFirebase()" class="btn-neon w-100">INGRESAR</button>
-            <p id="error-msg" class="text-danger mt-3 small"></p>
+            
+            <button onclick="loginSystem()" class="btn-neon">INGRESAR AL SISTEMA</button>
+            <p id="login-msg" class="text-danger mt-3 small"></p>
         </div>
     </div>
 
@@ -77,63 +202,77 @@
         <div class="sidebar">
             <div class="text-center mb-5">
                 <h3 class="text-neon fst-italic">GARAJE '89</h3>
-                <small class="text-secondary">SISTEMA INTEGRAL</small>
+                <small class="text-secondary" style="letter-spacing: 3px;">PRO SYSTEM</small>
             </div>
             
             <div class="nav-item active" onclick="nav('pos', this)">
-                <i class="bi bi-cart2 fs-5"></i> <span>Vender</span>
+                <i class="bi bi-cart2 fs-4"></i> <span>Punto de Venta</span>
             </div>
             <div class="nav-item" onclick="nav('proveedores', this)">
-                <i class="bi bi-boxes fs-5"></i> <span>Inventario & Sync</span>
+                <i class="bi bi-boxes fs-4"></i> <span>Inventario & Sync</span>
             </div>
             <div class="nav-item" onclick="nav('dash', this)">
-                <i class="bi bi-bar-chart-fill fs-5"></i> <span>Reportes</span>
+                <i class="bi bi-bar-chart-fill fs-4"></i> <span>Reportes</span>
             </div>
 
-            <div class="mt-auto p-3 text-center border-top border-dark">
-                <div class="mb-2"><i class="bi bi-person-circle fs-4 text-secondary"></i></div>
-                <small class="text-secondary d-block mb-2" id="user-display">Usuario</small>
-                <button onclick="logout()" class="btn btn-sm btn-outline-danger w-100">CERRAR SESIÓN</button>
+            <div class="user-footer">
+                <div class="mb-2"><i class="bi bi-person-circle fs-3 text-secondary"></i></div>
+                <h6 class="text-white mb-0" id="user-name">Usuario</h6>
+                <small class="text-neon" id="user-role">Rol</small>
+                <button onclick="logout()" class="btn btn-sm btn-outline-danger w-100 mt-3">SALIR</button>
             </div>
         </div>
 
         <div class="main-content">
             
             <div id="sec-pos">
-                <h3 class="text-white mb-4">PUNTO DE VENTA</h3>
-                
+                <h2 class="text-white mb-4">PUNTO DE VENTA</h2>
                 <div class="row">
-                    <div class="col-md-7">
-                        <div class="glass-panel">
+                    <div class="col-md-8">
+                        <div class="glass-panel" style="min-height: 80vh;">
                             <div class="input-group mb-3">
                                 <span class="input-group-text bg-dark border-secondary text-neon"><i class="bi bi-search"></i></span>
-                                <input id="buscador-pos" class="form-control bg-dark text-white border-secondary input-neon" placeholder="Escanear código o buscar..." onkeyup="filtrarPos()">
+                                <input id="buscador-pos" class="form-control bg-dark text-white border-secondary input-neon" 
+                                       placeholder="Escanear código o buscar por nombre..." 
+                                       onkeyup="filtrarPos()" autocomplete="off">
                             </div>
-                            <div style="height: 60vh; overflow-y: auto;">
-                                <table class="table-custom w-100">
+                            <div style="height: 65vh; overflow-y: auto; padding-right: 5px;">
+                                <table class="table-custom">
                                     <thead>
-                                        <tr><th>COD</th><th>PRODUCTO</th><th>PRECIO</th><th>STOCK</th><th></th></tr>
+                                        <tr>
+                                            <th>CÓDIGO</th>
+                                            <th>DESCRIPCIÓN</th>
+                                            <th>PRECIO</th>
+                                            <th class="text-center">STOCK</th>
+                                            <th></th>
+                                        </tr>
                                     </thead>
-                                    <tbody id="lista-busqueda"></tbody>
+                                    <tbody id="lista-busqueda">
+                                        </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="glass-panel h-100 d-flex flex-column">
-                            <h5 class="text-neon mb-3"><i class="bi bi-cart-check"></i> CARRITO ACTUAL</h5>
-                            <div class="flex-grow-1 overflow-auto mb-3">
-                                <table class="table-custom w-100">
+                            <h4 class="text-neon mb-3"><i class="bi bi-cart-check-fill"></i> TICKET ACTUAL</h4>
+                            <div class="flex-grow-1 overflow-auto mb-3" style="border-bottom: 1px solid #333;">
+                                <table class="table-custom">
                                     <tbody id="cart-body"></tbody>
                                 </table>
                             </div>
-                            <div class="border-top border-secondary pt-3">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="text-secondary">TOTAL A PAGAR</span>
+                            
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-secondary">ITEMS</span>
+                                    <span class="text-white fw-bold" id="items-count">0</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <span class="text-secondary fs-5">TOTAL</span>
                                     <h2 class="text-white m-0">S/ <span class="text-neon" id="total-lbl">0.00</span></h2>
                                 </div>
-                                <button onclick="finalizarVenta()" class="btn-neon w-100 py-3 fs-5">
+                                <button onclick="finalizarVenta()" class="btn-neon py-3 fs-5">
                                     <i class="bi bi-cash-coin me-2"></i> COBRAR
                                 </button>
                             </div>
@@ -144,18 +283,18 @@
 
             <div id="sec-proveedores" class="oculto">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="text-white">GESTIÓN DE INVENTARIO</h3>
+                    <h2 class="text-white">GESTIÓN DE INVENTARIO</h2>
                     <div class="d-flex gap-2">
-                        <button onclick="syncToSheets()" class="btn btn-sm btn-outline-success d-flex align-items-center gap-2">
-                            <i class="bi bi-cloud-arrow-up-fill"></i> Web <i class="bi bi-arrow-right"></i> Excel (Respaldo)
+                        <button onclick="syncToSheets()" class="btn btn-outline-success d-flex align-items-center gap-2">
+                            <i class="bi bi-cloud-arrow-up-fill"></i> RESPALDAR (Web -> Excel)
                         </button>
-                        <button onclick="syncFromSheets()" class="btn btn-sm btn-outline-warning d-flex align-items-center gap-2">
-                            <i class="bi bi-cloud-arrow-down-fill"></i> Excel <i class="bi bi-arrow-right"></i> Web (Restaurar)
+                        <button onclick="syncFromSheets()" class="btn btn-outline-warning d-flex align-items-center gap-2">
+                            <i class="bi bi-cloud-arrow-down-fill"></i> RESTAURAR (Excel -> Web)
                         </button>
                     </div>
                 </div>
 
-                <ul class="nav nav-pills mb-3">
+                <ul class="nav nav-pills mb-4">
                     <li class="nav-item"><a class="nav-link active" onclick="cambiarProv('Suzuki', this)">Suzuki</a></li>
                     <li class="nav-item"><a class="nav-link" onclick="cambiarProv('HJ', this)">HJ</a></li>
                     <li class="nav-item"><a class="nav-link" onclick="cambiarProv('CF', this)">CF (x85%)</a></li>
@@ -167,58 +306,67 @@
                 <div class="glass-panel">
                     <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom border-secondary">
                         <div>
-                            <h5 class="text-neon m-0" id="titulo-prov">Suzuki</h5>
-                            <small class="text-secondary">Actualización masiva por archivo</small>
+                            <h4 class="text-neon m-0" id="titulo-prov">SUZUKI</h4>
+                            <small class="text-secondary">Lista Maestra de Productos</small>
                         </div>
-                        <div class="d-flex gap-2 bg-dark p-2 rounded border border-secondary">
+                        <div class="d-flex gap-2 bg-dark p-2 rounded border border-secondary align-items-center">
+                            <i class="bi bi-file-earmark-excel-fill text-success fs-4"></i>
                             <input type="file" id="file-upload" class="form-control form-control-sm bg-dark text-white border-0" accept=".xlsx, .pdf">
-                            <button class="btn btn-light btn-sm fw-bold" onclick="compararArchivoLocal()">
-                                <i class="bi bi-search"></i> COMPARAR
+                            <button class="btn btn-light btn-sm fw-bold px-3" onclick="compararArchivoLocal()">
+                                COMPARAR
                             </button>
                         </div>
                     </div>
                     
-                    <div style="height: 50vh; overflow-y: auto;">
-                        <table class="table-custom w-100">
+                    <div style="height: 55vh; overflow-y: auto;">
+                        <table class="table-custom">
                             <thead>
-                                <tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>PRECIO VENTA</th><th>STOCK</th></tr>
+                                <tr>
+                                    <th>CÓDIGO</th>
+                                    <th>DESCRIPCIÓN</th>
+                                    <th>PRECIO VENTA</th>
+                                    <th>STOCK</th>
+                                </tr>
                             </thead>
-                            <tbody id="tabla-prov"></tbody>
+                            <tbody id="tabla-prov">
+                                </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
             <div id="sec-dash" class="oculto">
-                <h3 class="text-white mb-4">REPORTES Y ESTADÍSTICAS</h3>
+                <h2 class="text-white mb-4">REPORTES DE VENTA</h2>
                 
                 <div class="row g-4 mb-4">
-                    <div class="col-md-4">
-                        <div class="glass-panel text-center h-100 d-flex flex-column justify-content-center">
-                            <h6 class="text-secondary">VENTAS HOY</h6>
-                            <h1 class="text-neon display-4 fw-bold">S/ <span id="d-hoy">0.00</span></h1>
+                    <div class="col-md-6">
+                        <div class="glass-panel text-center py-5">
+                            <h6 class="text-secondary text-uppercase mb-3">Ventas del Día</h6>
+                            <h1 class="text-neon display-3 fw-bold m-0">S/ <span id="d-hoy">0.00</span></h1>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="glass-panel text-center h-100 d-flex flex-column justify-content-center">
-                            <h6 class="text-secondary">VENTAS ESTE MES</h6>
-                            <h1 class="text-white display-4 fw-bold">S/ <span id="d-mes">0.00</span></h1>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="glass-panel text-center h-100 d-flex flex-column justify-content-center">
-                            <h6 class="text-secondary">TOTAL ITEMS VENDIDOS (MES)</h6>
-                            <h1 class="text-info display-4 fw-bold" id="d-items">0</h1>
+                    <div class="col-md-6">
+                        <div class="glass-panel text-center py-5">
+                            <h6 class="text-secondary text-uppercase mb-3">Acumulado del Mes</h6>
+                            <h1 class="text-white display-3 fw-bold m-0">S/ <span id="d-mes">0.00</span></h1>
                         </div>
                     </div>
                 </div>
 
                 <div class="glass-panel">
                     <h5 class="text-neon mb-3">HISTORIAL RECIENTE</h5>
-                    <div style="max-height: 300px; overflow-y: auto;">
-                        <table class="table-custom w-100">
-                            <thead><th>FECHA</th><th>VENDEDOR</th><th>PRODUCTO</th><th>TOTAL</th></thead>
-                            <tbody id="tabla-ventas-hist"></tbody>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>FECHA</th>
+                                    <th>VENDEDOR</th>
+                                    <th>PRODUCTO</th>
+                                    <th>TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-ventas-hist">
+                                </tbody>
                         </table>
                     </div>
                 </div>
@@ -230,40 +378,40 @@
     <div id="modal-comp" class="modal-overlay oculto">
         <div class="glass-panel w-75 h-75 d-flex flex-column">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="text-warning"><i class="bi bi-exclamation-triangle-fill"></i> DETECTAR CAMBIOS DE PRECIO</h4>
-                <button onclick="cerrarModal()" class="btn btn-sm btn-outline-light">X</button>
+                <h3 class="text-warning"><i class="bi bi-exclamation-triangle-fill"></i> ACTUALIZACIÓN DETECTADA</h3>
+                <button onclick="document.getElementById('modal-comp').classList.add('oculto')" class="btn btn-sm btn-outline-secondary">CERRAR</button>
             </div>
             
-            <div class="alert alert-dark border-secondary d-flex justify-content-between">
-                <span>Proveedor: <b class="text-white" id="mod-prov"></b></span>
-                <span>Regla Aplicada: <b class="text-neon" id="mod-regla"></b></span>
+            <div class="alert alert-dark border-secondary d-flex justify-content-between align-items-center">
+                <span>Proveedor: <b class="text-white fs-5 mx-2" id="mod-prov"></b></span>
+                <span>Regla de Precio: <b class="text-neon fs-5 mx-2" id="mod-regla"></b></span>
             </div>
 
             <div class="flex-grow-1 overflow-auto mb-3">
-                <table class="table-custom w-100">
+                <table class="table-custom">
                     <thead>
-                        <tr><th>CÓDIGO</th><th>PRECIO WEB (ACTUAL)</th><th>NUEVO PRECIO (ARCHIVO)</th><th>ACCIÓN</th></tr>
+                        <tr>
+                            <th>CÓDIGO</th>
+                            <th>PRECIO ACTUAL (WEB)</th>
+                            <th>NUEVO PRECIO (ARCHIVO)</th>
+                            <th>ESTADO</th>
+                        </tr>
                     </thead>
                     <tbody id="body-comp"></tbody>
                 </table>
             </div>
             
             <div class="d-flex justify-content-end gap-3 pt-3 border-top border-secondary">
-                <button onclick="cerrarModal()" class="btn btn-outline-secondary px-4">CANCELAR</button>
-                <button onclick="aplicarCambiosFirebase()" class="btn-neon px-4 w-auto">CONFIRMAR Y ACTUALIZAR BD</button>
+                <button onclick="document.getElementById('modal-comp').classList.add('oculto')" class="btn btn-outline-light px-4">CANCELAR</button>
+                <button onclick="aplicarCambiosFirebase()" class="btn-neon px-5 w-auto">CONFIRMAR CAMBIOS</button>
             </div>
         </div>
     </div>
 
     <script>
-        // ==========================================
-        // CONFIGURACIÓN DEL SISTEMA
-        // ==========================================
-        
-        // 1. URL DE GOOGLE APPS SCRIPT (BACKEND EXCEL)
+        // 1. CONFIGURACIÓN (Tus credenciales)
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfQE70fjhK4ufnfOrYGZRARxNpWTrNWt3KBE-cD7t031bZyETi9sW0UEF_LuAV2g92/exec"; 
-
-        // 2. CONFIGURACIÓN DE FIREBASE (TUS CREDENCIALES)
+        
         const firebaseConfig = {
             apiKey: "AIzaSyBzUErnjQEGE9-neDh5z6VJ_xNaHRmAkew",
             authDomain: "garaje89-inventario.firebaseapp.com",
@@ -273,489 +421,472 @@
             appId: "1:538336429741:web:0f7ce96f624f3568a8e824"
         };
 
-        // INICIALIZACIÓN
+        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const auth = firebase.auth();
-        
-        // VARIABLES GLOBALES
-        let inventarioLocal = []; // Copia rápida de datos
+
+        // Variables Globales
+        let usuarioActual = null;
+        let inventarioLocal = [];
         let carrito = [];
         let cambiosPendientes = [];
         let provActual = 'Suzuki';
 
-        // ==========================================
-        // 1. SISTEMA DE LOGIN
-        // ==========================================
-        function loginFirebase() {
-            const e = document.getElementById('email').value;
-            const p = document.getElementById('password').value;
+        // --- VALIDAR SI YA HABÍA INICIADO SESIÓN ---
+        window.onload = function() {
+            const savedUser = localStorage.getItem('garaje_user');
+            if(savedUser) {
+                usuarioActual = JSON.parse(savedUser);
+                ingresarApp();
+            }
+        };
+
+        // --- SISTEMA DE LOGIN (SOLO CLAVE) ---
+        async function loginSystem() {
+            const pass = document.getElementById('login-pass').value.trim();
             const btn = document.querySelector('#login-screen button');
-            
+            const msg = document.getElementById('login-msg');
+
+            if(!pass) return;
+
             btn.innerText = "VERIFICANDO...";
-            
-            auth.signInWithEmailAndPassword(e, p)
-                .catch(err => {
-                    document.getElementById('error-msg').innerText = "Error: " + err.message;
-                    btn.innerText = "INGRESAR";
-                });
+            btn.disabled = true;
+            msg.innerText = "";
+
+            try {
+                // Buscamos en la colección 'usuarios' donde el campo 'contraseña' coincida
+                const snapshot = await db.collection('usuarios').where('contraseña', '==', pass).get();
+
+                if (snapshot.empty) {
+                    throw new Error("Contraseña no válida");
+                }
+
+                // Obtenemos datos del usuario (Nombre y Rol)
+                const data = snapshot.docs[0].data();
+                usuarioActual = {
+                    id: snapshot.docs[0].id,
+                    nombre: data.nombre,
+                    rol: data.permisos.rol
+                };
+
+                // Guardar sesión y entrar
+                localStorage.setItem('garaje_user', JSON.stringify(usuarioActual));
+                ingresarApp();
+
+            } catch (error) {
+                msg.innerText = error.message;
+                btn.innerText = "INGRESAR AL SISTEMA";
+                btn.disabled = false;
+                document.getElementById('login-pass').value = '';
+            }
         }
 
-        // MONITOR DE ESTADO DE SESIÓN
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                document.getElementById('login-screen').classList.add('oculto');
-                document.getElementById('app-container').classList.remove('oculto');
-                document.getElementById('user-display').innerText = user.email;
-                iniciarSistema();
-            } else {
-                document.getElementById('login-screen').classList.remove('oculto');
-                document.getElementById('app-container').classList.add('oculto');
-            }
-        });
+        function ingresarApp() {
+            document.getElementById('login-screen').classList.add('oculto');
+            document.getElementById('app-container').classList.remove('oculto');
+            
+            // Actualizar Sidebar con datos del usuario
+            document.getElementById('user-name').innerText = usuarioActual.nombre.toUpperCase();
+            document.getElementById('user-role').innerText = usuarioActual.rol.toUpperCase();
+            
+            iniciarEscuchas();
+        }
 
-        function logout() { auth.signOut(); location.reload(); }
+        function logout() {
+            localStorage.removeItem('garaje_user');
+            location.reload();
+        }
 
-        // ==========================================
-        // 2. CARGA DE DATOS EN TIEMPO REAL
-        // ==========================================
-        function iniciarSistema() {
-            // Escuchar cambios en Inventario
+        // --- ESCUCHAS EN TIEMPO REAL (BASE DE DATOS) ---
+        function iniciarEscuchas() {
+            // Inventario
             db.collection("inventario").onSnapshot(snap => {
                 inventarioLocal = [];
                 snap.forEach(doc => inventarioLocal.push({ id: doc.id, ...doc.data() }));
                 
-                // Si estamos en la vista de inventario, actualizar tabla
-                if (!document.getElementById('sec-proveedores').classList.contains('oculto')) {
-                    renderTablaProv();
-                }
-                // Si estamos en POS, refrescar búsqueda si hay algo escrito
-                if (document.getElementById('buscador-pos').value) {
-                    filtrarPos();
-                }
+                // Refrescar vistas si están activas
+                if(!document.getElementById('sec-proveedores').classList.contains('oculto')) renderTablaProv();
+                if(document.getElementById('buscador-pos').value) filtrarPos();
             });
 
-            // Escuchar cambios en Ventas (Dashboard)
-            escucharVentas();
+            // Ventas (Dashboard)
+            db.collection("ventas").orderBy("fecha", "desc").limit(50).onSnapshot(snap => {
+                let hoy = 0, mes = 0;
+                const dHoy = new Date().toDateString();
+                const dMes = new Date().getMonth();
+                
+                const tb = document.getElementById('tabla-ventas-hist');
+                tb.innerHTML = '';
+
+                snap.forEach(doc => {
+                    const v = doc.data();
+                    const fecha = v.fecha.toDate();
+                    
+                    if(fecha.toDateString() === dHoy) hoy += v.total;
+                    if(fecha.getMonth() === dMes) mes += v.total;
+
+                    // Llenar tabla historial
+                    tb.innerHTML += `
+                        <tr>
+                            <td class="text-secondary small">${fecha.toLocaleDateString()}</td>
+                            <td>${v.vendedor}</td>
+                            <td>${v.nombre}</td>
+                            <td class="text-neon fw-bold">S/ ${v.total.toFixed(2)}</td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('d-hoy').innerText = hoy.toFixed(2);
+                document.getElementById('d-mes').innerText = mes.toFixed(2);
+            });
         }
 
-        // ==========================================
-        // 3. PUNTO DE VENTA (POS)
-        // ==========================================
+        // --- PUNTO DE VENTA (POS) ---
         function filtrarPos() {
             const txt = document.getElementById('buscador-pos').value.toLowerCase();
             const list = document.getElementById('lista-busqueda');
             list.innerHTML = '';
-            
-            if (txt.length < 1) return;
 
-            // Filtra y muestra máximo 20 resultados para rapidez
-            const resultados = inventarioLocal.filter(p => 
+            if(txt.length < 1) return;
+
+            // Filtro (máximo 20 resultados para no saturar)
+            const matches = inventarioLocal.filter(p => 
                 (p.codigo && p.codigo.toLowerCase().includes(txt)) || 
                 (p.nombre && p.nombre.toLowerCase().includes(txt))
             ).slice(0, 20);
 
-            resultados.forEach(p => {
-                const stockClass = p.stock > 0 ? 'text-white' : 'text-danger';
+            matches.forEach(p => {
+                const stockStyle = p.stock > 0 ? 'text-white' : 'text-danger fw-bold';
                 list.innerHTML += `
-                    <tr onclick="addCart('${p.id}')" style="cursor:pointer; transition:0.2s" class="hover-bg">
+                    <tr class="hover-row" onclick="addToCart('${p.id}')">
                         <td class="text-neon fw-bold">${p.codigo}</td>
                         <td>${p.nombre}</td>
                         <td class="text-end">S/ ${p.precio.toFixed(2)}</td>
-                        <td class="${stockClass} text-center">${p.stock}</td>
+                        <td class="text-center ${stockStyle}">${p.stock}</td>
                         <td class="text-end"><i class="bi bi-plus-circle text-neon"></i></td>
-                    </tr>`;
+                    </tr>
+                `;
             });
         }
 
-        function addCart(id) {
-            const p = inventarioLocal.find(x => x.id === id);
+        function addToCart(id) {
+            const prod = inventarioLocal.find(x => x.id === id);
             
-            if (p.stock <= 0 && !confirm("Este producto tiene Stock 0. ¿Agregar igual?")) return;
+            // Validación stock
+            if(prod.stock <= 0) {
+                if(!confirm("⚠️ Producto sin stock (" + prod.stock + "). ¿Vender igual?")) return;
+            }
 
-            const ex = carrito.find(x => x.id === id);
-            if (ex) {
-                ex.cantidad++;
+            const existe = carrito.find(x => x.id === id);
+            if(existe) {
+                existe.cantidad++;
             } else {
-                carrito.push({ ...p, cantidad: 1 });
+                carrito.push({ ...prod, cantidad: 1 });
             }
             
+            // Limpiar buscador para seguir escaneando
             document.getElementById('buscador-pos').value = '';
             document.getElementById('lista-busqueda').innerHTML = '';
-            document.getElementById('buscador-pos').focus(); // Mantener foco para seguir escaneando
+            document.getElementById('buscador-pos').focus();
+            
             renderCart();
         }
 
         function renderCart() {
-            const tb = document.getElementById('cart-body'); 
+            const tb = document.getElementById('cart-body');
             tb.innerHTML = '';
-            let tot = 0;
-            
-            carrito.forEach((p, i) => {
-                const sub = p.cantidad * p.precio;
-                tot += sub;
+            let total = 0;
+            let count = 0;
+
+            carrito.forEach((item, index) => {
+                const subtotal = item.cantidad * item.precio;
+                total += subtotal;
+                count += item.cantidad;
+
                 tb.innerHTML += `
                     <tr>
                         <td>
-                            <div class="fw-bold text-white">${p.nombre}</div>
-                            <small class="text-secondary">${p.codigo}</small>
+                            <div class="text-white fw-bold">${item.nombre}</div>
+                            <small class="text-secondary">${item.codigo}</small>
                         </td>
-                        <td>
+                        <td style="width: 120px;">
                             <div class="d-flex align-items-center gap-2">
-                                <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="cambiarCant(${i}, -1)">-</button>
-                                <span class="fw-bold">${p.cantidad}</span>
-                                <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="cambiarCant(${i}, 1)">+</button>
+                                <button class="btn btn-sm btn-outline-secondary py-0" onclick="modCant(${index}, -1)">-</button>
+                                <span class="fw-bold">${item.cantidad}</span>
+                                <button class="btn btn-sm btn-outline-secondary py-0" onclick="modCant(${index}, 1)">+</button>
                             </div>
                         </td>
-                        <td class="text-end text-neon">S/ ${sub.toFixed(2)}</td>
-                        <td class="text-end"><i class="bi bi-trash3-fill text-danger" style="cursor:pointer" onclick="delItem(${i})"></i></td>
-                    </tr>`;
+                        <td class="text-end text-neon">S/ ${subtotal.toFixed(2)}</td>
+                        <td><i class="bi bi-trash3-fill text-danger" style="cursor: pointer;" onclick="modCant(${index}, -999)"></i></td>
+                    </tr>
+                `;
             });
-            document.getElementById('total-lbl').innerText = tot.toFixed(2);
+
+            document.getElementById('total-lbl').innerText = total.toFixed(2);
+            document.getElementById('items-count').innerText = count;
         }
 
-        function cambiarCant(idx, delta) {
-            carrito[idx].cantidad += delta;
-            if (carrito[idx].cantidad <= 0) carrito.splice(idx, 1);
+        function modCant(index, delta) {
+            carrito[index].cantidad += delta;
+            if(carrito[index].cantidad <= 0) {
+                carrito.splice(index, 1);
+            }
             renderCart();
         }
-        function delItem(idx) { carrito.splice(idx, 1); renderCart(); }
 
         async function finalizarVenta() {
-            if (!carrito.length) return alert("El carrito está vacío.");
-            if (!confirm("¿Confirmar venta y procesar cobro?")) return;
+            if(carrito.length === 0) return alert("El carrito está vacío");
+            if(!confirm("¿Confirmar venta y procesar cobro?")) return;
 
-            const btn = document.querySelector('#sec-pos button.btn-neon');
-            const originalTxt = btn.innerHTML;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> PROCESANDO...';
+            const btn = document.querySelector('#sec-pos .btn-neon');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "PROCESANDO...";
             btn.disabled = true;
 
             try {
                 const batch = db.batch();
-                const ventaId = "V-" + Date.now().toString().slice(-8);
+                const idVenta = "V-" + Date.now();
                 const fecha = new Date();
 
-                // Preparar operaciones en lote
                 carrito.forEach(item => {
                     // 1. Restar Stock
                     const refInv = db.collection("inventario").doc(item.id);
-                    // Aseguramos que stock es número
-                    const nuevoStock = Number(item.stock) - item.cantidad;
-                    batch.update(refInv, { stock: nuevoStock });
+                    batch.update(refInv, { stock: Number(item.stock) - item.cantidad });
 
-                    // 2. Crear registro de venta
+                    // 2. Guardar Venta
                     const refVenta = db.collection("ventas").doc();
                     batch.set(refVenta, {
-                        idVenta: ventaId,
+                        idVenta: idVenta,
                         fecha: fecha,
-                        vendedor: auth.currentUser.email,
+                        vendedor: usuarioActual.nombre,
                         codigo: item.codigo,
                         nombre: item.nombre,
                         cantidad: item.cantidad,
                         precio: item.precio,
                         total: item.cantidad * item.precio,
-                        proveedor: item.proveedor || "Desconocido"
+                        proveedor: item.proveedor || "General"
                     });
                 });
 
                 await batch.commit();
-                alert("✅ Venta registrada correctamente");
+                
+                alert("✅ Venta realizada con éxito");
                 carrito = [];
                 renderCart();
-            } catch (error) {
-                alert("Error al procesar: " + error.message);
+
+            } catch (e) {
+                alert("Error: " + e.message);
             } finally {
-                btn.innerHTML = originalTxt;
+                btn.innerHTML = originalText;
                 btn.disabled = false;
             }
         }
 
-        // ==========================================
-        // 4. GESTIÓN DE PROVEEDORES
-        // ==========================================
+        // --- GESTIÓN DE PROVEEDORES ---
         function cambiarProv(nombre, el) {
             provActual = nombre;
-            document.querySelectorAll('.nav-pills .nav-link').forEach(e => e.classList.remove('active'));
+            // Actualizar UI pestañas
+            document.querySelectorAll('.nav-pills .nav-link').forEach(l => l.classList.remove('active'));
             el.classList.add('active');
-            document.getElementById('titulo-prov').innerText = nombre;
+            
+            document.getElementById('titulo-prov').innerText = nombre.toUpperCase();
             renderTablaProv();
         }
 
         function renderTablaProv() {
-            const tb = document.getElementById('tabla-prov'); 
+            const tb = document.getElementById('tabla-prov');
             tb.innerHTML = '';
             
-            // Filtramos el inventario local por la marca seleccionada
-            const filtrados = inventarioLocal.filter(p => p.proveedor === provActual);
-            
-            if(filtrados.length === 0) {
-                tb.innerHTML = '<tr><td colspan="4" class="text-center text-secondary py-4">No hay productos de esta marca.</td></tr>';
+            // Filtrar productos del proveedor actual
+            const productos = inventarioLocal.filter(p => p.proveedor === provActual);
+
+            if(productos.length === 0) {
+                tb.innerHTML = '<tr><td colspan="4" class="text-center text-secondary py-5">No hay productos registrados para esta marca.</td></tr>';
                 return;
             }
 
-            filtrados.forEach(p => {
+            productos.forEach(p => {
                 tb.innerHTML += `
                     <tr>
                         <td class="text-neon">${p.codigo}</td>
                         <td>${p.nombre}</td>
                         <td>S/ ${p.precio.toFixed(2)}</td>
                         <td>${p.stock}</td>
-                    </tr>`;
+                    </tr>
+                `;
             });
         }
 
         // --- COMPARATIVA DE ARCHIVOS (LÓGICA +5% / x85%) ---
         async function compararArchivoLocal() {
-            const file = document.getElementById('file-upload').files[0];
-            if (!file) return alert("Por favor selecciona un archivo Excel (.xlsx) o PDF.");
-
-            let datosArchivo = [];
+            const fileInput = document.getElementById('file-upload');
+            if(!fileInput.files.length) return alert("Selecciona un archivo Excel o PDF");
             
-            // Selector de lector según extensión
-            if (file.name.endsWith('.xlsx')) {
-                datosArchivo = await leerExcel(file);
-            } else if (file.name.endsWith('.pdf')) {
-                datosArchivo = await leerPDF(file);
+            const file = fileInput.files[0];
+            let dataExterno = [];
+
+            // Leer archivo
+            if(file.name.endsWith('.xlsx')) {
+                dataExterno = await leerExcel(file);
+            } else if(file.name.endsWith('.pdf')) {
+                dataExterno = await leerPDF(file);
             } else {
-                return alert("Formato no soportado.");
+                return alert("Formato no soportado");
             }
 
-            // Configurar Reglas según pestaña
-            let factor = 1; 
+            // Definir reglas según pestaña actual
+            let factor = 1;
             let reglaTxt = "Precios Exactos";
             
-            if (provActual === 'Bajaj') { factor = 1.05; reglaTxt = "Aumento +5%"; }
-            else if (provActual === 'CF') { factor = 0.85; reglaTxt = "Descuento x85%"; }
+            if(provActual === 'Bajaj') { factor = 1.05; reglaTxt = "Aumento +5%"; }
+            else if(provActual === 'CF') { factor = 0.85; reglaTxt = "Descuento x85%"; }
 
             document.getElementById('mod-prov').innerText = provActual;
             document.getElementById('mod-regla').innerText = reglaTxt;
 
+            // Comparar
             cambiosPendientes = [];
-            const tb = document.getElementById('body-comp'); 
+            const tb = document.getElementById('body-comp');
             tb.innerHTML = '';
-            
-            // Filtrar productos de Firebase de ESTA marca
+
             const misProductos = inventarioLocal.filter(p => p.proveedor === provActual);
-            
-            let count = 0;
+
             misProductos.forEach(web => {
-                // Buscamos coincidencia de código en el archivo subido
-                // Normalizamos a string y quitamos espacios
-                const nuevo = datosArchivo.find(n => String(n.codigo).trim() === String(web.codigo).trim());
+                // Buscar coincidencia por código
+                const nuevo = dataExterno.find(n => String(n.codigo).trim() === String(web.codigo).trim());
                 
-                if (nuevo) {
-                    // APLICAMOS LA MATEMÁTICA
-                    const precioCalculado = parseFloat((nuevo.precio * factor).toFixed(2));
+                if(nuevo) {
+                    const precioCalc = parseFloat((nuevo.precio * factor).toFixed(2));
                     
-                    // Solo si el precio es diferente
-                    if (precioCalculado !== web.precio) {
-                        count++;
-                        cambiosPendientes.push({ id: web.id, nuevoPrecio: precioCalculado });
+                    if(precioCalc !== web.precio) {
+                        cambiosPendientes.push({ id: web.id, nuevoPrecio: precioCalc });
                         
                         tb.innerHTML += `
                             <tr>
                                 <td>${web.codigo}</td>
                                 <td class="text-secondary">S/ ${web.precio}</td>
-                                <td class="text-neon fw-bold">S/ ${precioCalculado}</td>
+                                <td class="text-neon fw-bold">S/ ${precioCalc}</td>
                                 <td><span class="badge bg-warning text-dark">ACTUALIZAR</span></td>
-                            </tr>`;
+                            </tr>
+                        `;
                     }
                 }
             });
 
-            if (count > 0) {
+            if(cambiosPendientes.length > 0) {
                 document.getElementById('modal-comp').classList.remove('oculto');
             } else {
-                alert("El archivo no contiene cambios de precio para los productos existentes.");
+                alert("El archivo no contiene cambios de precio necesarios.");
             }
         }
 
         async function aplicarCambiosFirebase() {
-            if (!confirm(`¿Estás seguro de actualizar ${cambiosPendientes.length} precios en la base de datos en vivo?`)) return;
-
-            const btn = document.querySelector('#modal-comp .btn-neon');
-            btn.innerText = "ACTUALIZANDO...";
-            btn.disabled = true;
-
+            if(!confirm("¿Actualizar precios en Base de Datos?")) return;
+            
             const batch = db.batch();
             cambiosPendientes.forEach(c => {
                 const ref = db.collection("inventario").doc(c.id);
                 batch.update(ref, { precio: c.nuevoPrecio });
             });
-
-            await batch.commit();
             
-            alert("✅ Base de datos actualizada correctamente.");
-            cerrarModal();
-            btn.innerText = "CONFIRMAR Y ACTUALIZAR BD";
-            btn.disabled = false;
+            await batch.commit();
+            alert("Precios actualizados correctamente");
+            document.getElementById('modal-comp').classList.add('oculto');
         }
-
-        function cerrarModal() { document.getElementById('modal-comp').classList.add('oculto'); }
 
         // --- LECTORES DE ARCHIVOS ---
         function leerExcel(file) {
             return new Promise(resolve => {
                 const reader = new FileReader();
                 reader.onload = e => {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
+                    const workbook = XLSX.read(e.target.result, { type: 'array' });
                     const sheet = workbook.Sheets[workbook.SheetNames[0]];
                     const json = XLSX.utils.sheet_to_json(sheet);
                     
-                    // Normalización inteligente de columnas
-                    const normalizado = json.map(row => {
+                    // Normalizar columnas
+                    const data = json.map(row => {
                         const keys = Object.keys(row);
-                        // Buscar columnas parecidas a 'CODIGO' y 'PRECIO'
-                        const kCod = keys.find(k => k.toUpperCase().includes('COD') || k.toUpperCase().includes('ART'));
-                        const kPre = keys.find(k => k.toUpperCase().includes('PRECIO') || k.toUpperCase().includes('P.UNIT') || k.toUpperCase().includes('COSTO'));
-                        
-                        if(kCod && kPre) {
-                            return { codigo: String(row[kCod]), precio: Number(row[kPre]) };
-                        }
+                        const kCod = keys.find(k => k.match(/COD/i) || k.match(/ART/i));
+                        const kPre = keys.find(k => k.match(/PRECIO/i) || k.match(/UNIT/i));
+                        if(kCod && kPre) return { codigo: String(row[kCod]), precio: Number(row[kPre]) };
                         return null;
-                    }).filter(x => x); // Eliminar nulos
-                    
-                    resolve(normalizado);
+                    }).filter(x => x);
+                    resolve(data);
                 };
                 reader.readAsArrayBuffer(file);
             });
         }
 
         async function leerPDF(file) {
-            // Nota: Leer PDF es complejo en el navegador. Esta es una aproximación básica.
-            alert("⚠️ La lectura de PDF es experimental. Verifica bien los precios detectados.");
-            const arrayBuffer = await file.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+            alert("⚠️ Lectura PDF experimental");
+            const buffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument(buffer).promise;
             let items = [];
-
-            for (let i = 1; i <= pdf.numPages; i++) {
+            
+            for(let i=1; i<=pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
                 const content = await page.getTextContent();
-                const strings = content.items.map(item => item.str);
+                const strings = content.items.map(x => x.str);
                 
-                // Algoritmo básico de proximidad: Busca numero decimal (precio) precedido por texto (código)
+                // Algoritmo simple: buscar numero decimal (precio) precedido por texto
                 for(let j=0; j<strings.length; j++) {
-                    const s = strings[j];
-                    // Regex para precio (ej: 120.50 o 1500)
-                    if (/^[0-9]+(\.[0-9]{2})?$/.test(s) && j > 0) {
-                        items.push({ codigo: strings[j-1], precio: parseFloat(s) });
+                    if(/^[0-9]+(\.[0-9]{2})?$/.test(strings[j]) && j>0) {
+                        items.push({ codigo: strings[j-1], precio: parseFloat(strings[j]) });
                     }
                 }
             }
             return items;
         }
 
-
-        // ==========================================
-        // 5. SINCRONIZACIÓN (WEB <-> GOOGLE SHEETS)
-        // ==========================================
+        // --- SINCRONIZACIÓN (WEB <-> EXCEL) ---
         async function syncToSheets() {
-            if (!confirm("⚠️ ATENCIÓN:\nSe borrarán las hojas de Google Sheets y se copiará el inventario actual de esta web.\n¿Deseas continuar el respaldo?")) return;
-
-            alert("Iniciando respaldo en la nube... Esto puede tardar unos segundos.");
-            
+            if(!confirm("⚠️ ATENCIÓN:\nSe borrará el Excel en Google Sheets y se subirá lo que ves en pantalla.\n¿Continuar?")) return;
             try {
-                await fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'backupToSheets',
-                        inventario: inventarioLocal
-                    })
+                await fetch(APPS_SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ action: 'backupToSheets', inventario: inventarioLocal }) 
                 });
-                alert("✅ Respaldo completado exitosamente en Google Sheets.");
-            } catch (e) {
-                alert("Error en el respaldo: " + e.message);
-            }
+                alert("✅ Respaldo completado en Google Sheets");
+            } catch(e) { alert("Error: " + e.message); }
         }
 
         async function syncFromSheets() {
-            if (!confirm("⚠️ PELIGRO:\nSe actualizarán los datos de la web usando la información del Excel.\n¿Estás seguro de restaurar?")) return;
-
-            alert("Descargando datos de Google Sheets...");
-            
+            if(!confirm("⚠️ CUIDADO:\nSe borrarán los datos de la Web y se traerán los del Excel.\n¿Continuar?")) return;
             try {
-                const res = await fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'restoreFromSheets' })
+                const res = await fetch(APPS_SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ action: 'restoreFromSheets' }) 
                 });
                 const data = await res.json();
                 
-                if (data.inventario && data.inventario.length > 0) {
-                    alert(`Se descargaron ${data.inventario.length} productos. Actualizando Firebase...`);
-                    
-                    const batch = db.batch();
-                    data.inventario.forEach(p => {
-                        // Buscamos si ya existe el código para actualizar su ID, sino creamos nuevo
-                        const existente = inventarioLocal.find(l => l.codigo === p.codigo);
-                        const ref = existente ? db.collection("inventario").doc(existente.id) : db.collection("inventario").doc();
-                        
-                        batch.set(ref, p, { merge: true });
-                    });
-                    
-                    await batch.commit();
-                    alert("✅ Restauración completada. La web está sincronizada con el Excel.");
-                } else {
-                    alert("El Excel parece estar vacío o hubo un error al leer.");
-                }
-            } catch (e) {
-                alert("Error en la restauración: " + e.message);
-            }
-        }
-
-        // ==========================================
-        // 6. DASHBOARD
-        // ==========================================
-        function escucharVentas() {
-            db.collection("ventas").orderBy("fecha", "desc").limit(100).onSnapshot(snap => {
-                let hoy = 0, mes = 0, itemsMes = 0;
-                const dateHoy = new Date().toDateString();
-                const mesActual = new Date().getMonth();
-                
-                const tbHist = document.getElementById('tabla-ventas-hist');
-                tbHist.innerHTML = '';
-
-                snap.forEach(doc => {
-                    const v = doc.data();
-                    const fechaObj = v.fecha.toDate(); // Convertir Timestamp Firebase a JS Date
-                    
-                    if (fechaObj.toDateString() === dateHoy) hoy += v.total;
-                    if (fechaObj.getMonth() === mesActual) {
-                        mes += v.total;
-                        itemsMes += v.cantidad;
-                    }
-
-                    // Llenar tabla historial (solo los primeros 10)
-                    if (tbHist.childElementCount < 10) {
-                        tbHist.innerHTML += `
-                            <tr>
-                                <td class="small text-secondary">${fechaObj.toLocaleDateString()}</td>
-                                <td>${v.vendedor.split('@')[0]}</td>
-                                <td>${v.nombre} <span class="text-secondary">x${v.cantidad}</span></td>
-                                <td class="text-neon">S/ ${v.total.toFixed(2)}</td>
-                            </tr>`;
-                    }
+                // Actualización por lotes
+                const batch = db.batch();
+                data.inventario.forEach(p => {
+                    // Buscar si existe para no duplicar
+                    const existe = inventarioLocal.find(x => x.codigo === p.codigo);
+                    const ref = existe ? db.collection("inventario").doc(existe.id) : db.collection("inventario").doc();
+                    batch.set(ref, p, { merge: true });
                 });
-
-                document.getElementById('d-hoy').innerText = hoy.toFixed(2);
-                document.getElementById('d-mes').innerText = mes.toFixed(2);
-                document.getElementById('d-items').innerText = itemsMes;
-            });
+                await batch.commit();
+                alert("✅ Web actualizada desde el Excel");
+            } catch(e) { alert("Error: " + e.message); }
         }
 
-        // ==========================================
-        // NAVEGACIÓN
-        // ==========================================
-        function nav(id, el) {
+        // --- NAVEGACIÓN ---
+        function nav(id, element) {
+            // Activar clase visual
             document.querySelectorAll('.sidebar .nav-item').forEach(e => e.classList.remove('active'));
-            el.classList.add('active');
+            element.classList.add('active');
             
-            ['sec-pos', 'sec-proveedores', 'sec-dash'].forEach(sec => document.getElementById(sec).classList.add('oculto'));
+            // Ocultar/Mostrar secciones
+            ['sec-pos', 'sec-proveedores', 'sec-dash'].forEach(sec => {
+                document.getElementById(sec).classList.add('oculto');
+            });
             document.getElementById('sec-' + id).classList.remove('oculto');
 
-            if (id === 'proveedores') renderTablaProv();
+            // Acciones extra al cambiar
+            if(id === 'proveedores') renderTablaProv();
         }
-
     </script>
 </body>
 </html>
